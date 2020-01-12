@@ -62,15 +62,7 @@ void LED_StateMachine_Init(void)
 
 	LED_NRF24L01_Init(); //Setup RF-Interface
 
-	LED_PWM_SetRGBW(1000, 0, 0, 0);
-	HAL_Delay(1000);
-	LED_PWM_SetRGBW(0, 1000, 0, 0);
-	HAL_Delay(1000);
-	LED_PWM_SetRGBW(0, 0, 1000, 0);
-	HAL_Delay(1000);
-	LED_PWM_SetRGBW(0, 0, 0, 1000);
-	HAL_Delay(1000);
-	LED_SetModeFadeHue(1000, 65535, 0, 65535, 1000);
+	LED_SetModeFadeHue(1000, 65535, 0, 65535, 10000);
 }
 
 

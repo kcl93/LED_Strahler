@@ -1,3 +1,3 @@
 LED_Thermomodel.cpp:21:6:void LED_Thermomodel_Init()	8	static
 LED_Thermomodel.cpp:40:6:void LED_Thermomodel_Handle()	16	static
-LED_Thermomodel.cpp:73:7:float LED_Thermomodel_GetTemp()	8	static
+LED_Thermomodel.cpp:72:7:float LED_Thermomodel_GetTemp()	8	static

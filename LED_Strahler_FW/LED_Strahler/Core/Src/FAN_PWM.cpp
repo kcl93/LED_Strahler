@@ -15,25 +15,17 @@ extern TIM_HandleTypeDef htim17;
 
 void FAN_PWM_Init(void)
 {
-	uint16_t i;
-
-	//Set duty cycle to zero
-	FAN_PWM_SetDutyCycle(0);
+	//Set duty cycle to 100% for testing
+	FAN_PWM_SetDutyCycle(1000);
 
 	//Start FAN PWM
 	HAL_TIM_PWM_Start(&FAN_PWM_TIMER, TIM_CHANNEL_1);
 
-	//Ramp fan up and down for testing
-	for(i = 0; i <= 1000; i++)
-	{
-		FAN_PWM_SetDutyCycle(i);
-		HAL_Delay(1); //Delay 1ms
-	}
-	for(i = 1000; i <= 1000; i--)
-	{
-		FAN_PWM_SetDutyCycle(i);
-		HAL_Delay(1); //Delay 1ms
-	}
+	//Let fan ramp up shortly for testing
+	HAL_Delay(4000);
+
+	//Set duty cycle to zero
+	FAN_PWM_SetDutyCycle(0);
 }
 
 

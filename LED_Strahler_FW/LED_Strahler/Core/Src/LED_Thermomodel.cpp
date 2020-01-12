@@ -63,8 +63,7 @@ void LED_Thermomodel_Handle(void)
 		{
 			Fan_PWM = 0;
 		}
-		//FAN_PWM_SetDutyCycle(Fan_PWM);
-		FAN_PWM_SetDutyCycle(500);
+		FAN_PWM_SetDutyCycle(Fan_PWM);
 	}
 }
 
