@@ -1,0 +1,10 @@
+LED_StateMachine.c:29:6:LED_StateMachine_Init	8	static
+LED_StateMachine.c:36:6:LED_Handle	24	static
+LED_StateMachine.c:71:6:LED_CopyRGB	20	static
+LED_StateMachine.c:90:6:LED_CopyRGW	8	static
+LED_StateMachine.c:100:6:LED_SetModeRGB	20	static
+LED_StateMachine.c:108:6:LED_SetModeRGBW	8	static
+LED_StateMachine.c:116:6:LED_SetModeStrobeRGB	20	static
+LED_StateMachine.c:124:6:LED_SetModeStrobeRGBW	8	static
+LED_StateMachine.c:132:6:LED_SetModeFadeRGB	0	static
+LED_StateMachine.c:140:6:LED_SetModeFadeRGBW	0	static

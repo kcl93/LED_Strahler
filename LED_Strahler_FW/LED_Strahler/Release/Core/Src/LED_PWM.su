@@ -1,0 +1,7 @@
+LED_PWM.c:28:6:LED_PWM_Init	0	static
+LED_PWM.c:36:6:LED_PWM_SetRGBW	32	static
+LED_PWM.c:47:6:LED_PWM_SetPWM_TIM	8	static
+LED_PWM.c:73:6:LED_PWM_SetBoost	8	static
+LED_PWM.c:81:6:LED_PWM_CheckBoost	8	static
+LED_PWM.c:91:6:LED_PWM_SetFastPWM	16	static
+LED_PWM.c:118:6:LED_PWM_SetSlowPWM	16	static

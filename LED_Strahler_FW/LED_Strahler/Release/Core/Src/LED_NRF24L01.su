@@ -1,0 +1,11 @@
+LED_NRF24L01.c:164:6:LED_NRF24L01_Init	16	static
+LED_NRF24L01.c:188:6:LED_NRF24L01_IRQ	48	static
+LED_NRF24L01.c:248:13:Exec_PingRequest	24	static
+LED_NRF24L01.c:275:13:Exec_SetGroup	16	static
+LED_NRF24L01.c:285:13:Exec_SetTimebase	16	static
+LED_NRF24L01.c:292:13:Exec_SetRGB	24	static
+LED_NRF24L01.c:302:13:Exec_SetRGBW	24	static
+LED_NRF24L01.c:312:13:Exec_StrobeRGB	32	static
+LED_NRF24L01.c:322:13:Exec_StrobeRGBW	40	static
+LED_NRF24L01.c:332:13:Exec_FadeRGB	24	static
+LED_NRF24L01.c:342:13:Exec_FadeRGBW	24	static

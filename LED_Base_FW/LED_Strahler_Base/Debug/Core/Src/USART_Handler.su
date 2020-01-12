@@ -1,0 +1,8 @@
+USART_Handler.cpp:14:1:USART_Handler::USART_Handler(UART_HandleTypeDef&)	16	static
+USART_Handler.cpp:25:10:uint16_t USART_Handler::Available()	16	static
+USART_Handler.cpp:31:6:void USART_Handler::Write(uint8_t*, uint16_t)	24	static
+USART_Handler.cpp:51:9:uint8_t USART_Handler::Read()	24	static
+USART_Handler.cpp:68:10:uint16_t USART_Handler::Read(uint8_t*, uint16_t)	40	static
+USART_Handler.cpp:87:6:void USART_Handler::Print(char*)	24	static
+USART_Handler.cpp:103:6:void USART_Handler::Println(char*)	24	static
+USART_Handler.cpp:119:6:bool USART_Handler::Busy()	16	static

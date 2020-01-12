@@ -1,0 +1,60 @@
+﻿<Window x:Class="LED_Strahler_GUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LED_Strahler_GUI"
+        mc:Ignorable="d"
+        Title="LED Strahler GUI" Height="750" Width="1200"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <Grid Name="MainGrid" SizeChanged="MainGrid_SizeChanged">
+        <TabControl>
+            <TabItem Name="Control" Header="Control">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <local:LEDGroupControl Grid.Column="0" Group="Broadcast"/>
+                    <local:LEDGroupControl Grid.Column="1" Group="Group 1"/>
+                    <local:LEDGroupControl Grid.Column="2" Group="Group 2"/>
+                    <local:LEDGroupControl Grid.Column="3" Group="Group 3"/>
+                    <local:LEDGroupControl Grid.Column="4" Group="Group 4"/>
+                    <local:LEDGroupControl Grid.Column="5" Group="Group 5"/>
+                </Grid>
+            </TabItem>
+            <TabItem Name="Config" Header="Config">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <GroupBox Grid.Column="0" Header="Configuration">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Label Grid.Row="0"  Content="Refresh LED Strahler list:" HorizontalContentAlignment="Center"/>
+                            <Button Grid.Row="1" Content="Refresh" IsEnabled="{Binding RefreshEnabled}" Width="100px" Height="24px"/>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Grid.Column="1" Header="Group setup">
+                        <DataGrid Width="400" HorizontalAlignment="Left" Name="DeviceGrid" ItemsSource="{Binding DeviceList}" AutoGenerateColumns="False" CanUserResizeColumns="False" VerticalScrollBarVisibility="Auto" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" SelectionUnit="Cell">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Device ID" MinWidth="200" Binding="{Binding UUID}" IsReadOnly="True"/>
+                                <DataGridComboBoxColumn Header="Group" MinWidth="100" SelectedItemBinding="{Binding Group}" ItemsSource="{Binding AvailableGroups}"/>
+                                <DataGridCheckBoxColumn Header="Test" Binding="{Binding TestState}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
