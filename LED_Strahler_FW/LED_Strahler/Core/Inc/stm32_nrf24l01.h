@@ -260,8 +260,8 @@ IRQ			Not used	Interrupt pin. Goes low when active. Pin functionality is active,
 #define NRF24L01_1MBPS			1
 #define NRF24L01_250KBPS		2
 
-/* Configuration, 2 bytes CRC, disable TX_DS und MAX_RT on IRQ pin */
-#define NRF24L01_CONFIG			((1 << NRF24L01_EN_CRC) | (1 << NRF24L01_CRCO) | (1 << NRF24L01_MASK_MAX_RT) | (1 << NRF24L01_MASK_TX_DS))
+/* Configuration, 2 bytes CRC, disable all interrupts on IRQ pin */
+#define NRF24L01_CONFIG			((1 << NRF24L01_EN_CRC) | (1 << NRF24L01_CRCO))
 
 /* Instruction Mnemonics */
 #define NRF24L01_REGISTER_MASK				0x1F
@@ -275,6 +275,8 @@ IRQ			Not used	Interrupt pin. Goes low when active. Pin functionality is active,
 #define NRF24L01_REUSE_TX_PL_MASK			0xE3
 #define NRF24L01_ACTIVATE_MASK				0x50
 #define NRF24L01_R_RX_PL_WID_MASK			0x60
+#define NRF24L01_W_ACK_PAYLOAD_MASK(reg)	(0xA8 | (0x07 & reg))
+#define NRF24L01_W_TX_PAYLOAD_NOACK_MASK	0xB0
 #define NRF24L01_NOP_MASK					0xFF
 
 /* Flush FIFOs */

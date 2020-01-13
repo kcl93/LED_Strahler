@@ -111,6 +111,9 @@ uint8_t NRF24L01_Init(uint8_t channel, uint8_t payload_size) {
 	// Set address length to 4 bytes
 	NRF24L01_WriteRegister(NRF24L01_REG_SETUP_AW, (0x02 << NRF24L01_AW));
 
+	//Enable dynamic ACK
+	NRF24L01_WriteRegister(NRF24L01_REG_FEATURE, 0x01);
+
 	/* Clear FIFOs */
 	NRF24L01_FLUSH_TX;
 	NRF24L01_FLUSH_RX;
@@ -222,7 +225,7 @@ void NRF24L01_Transmit(uint8_t *data) {
 	uint8_t count = NRF24L01_Struct.PayloadSize;
 
 	/* Chip enable put to low, disable it */
-	NRF24L01_CE_LOW;
+	//NRF24L01_CE_LOW;
 	
 	/* Go to power up tx mode */
 	NRF24L01_PowerUpTx();
@@ -233,7 +236,8 @@ void NRF24L01_Transmit(uint8_t *data) {
 	/* Send payload to nRF24L01+ */
 	NRF24L01_CSN_LOW;
 	/* Send write payload command */
-	NRF24L01_SPI_Send(NRF24L01_W_TX_PAYLOAD_MASK);
+	//NRF24L01_SPI_Send(NRF24L01_W_TX_PAYLOAD_MASK);
+	NRF24L01_SPI_Send(NRF24L01_W_TX_PAYLOAD_NOACK_MASK);
 	/* Fill payload with data*/
 	NRF24L01_SPI_WriteMulti(data, count);
 	/* Disable SPI */

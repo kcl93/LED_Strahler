@@ -62,7 +62,7 @@ void LED_StateMachine_Init(void)
 
 	LED_NRF24L01_Init(); //Setup RF-Interface
 
-	LED_SetModeFadeHue(1000, 65535, 0, 65535, 10000);
+	LED_SetModeFadeHue(1000, 65535, 0, 65535, 1000);
 }
 
 
@@ -225,6 +225,15 @@ inline void LED_CopyHSV(uint16_t hue, uint16_t saturation, uint16_t value)
 	LED_Hue = hue;
 	LED_Saturation = saturation;
 	LED_Value = value;
+}
+
+
+
+void LED_UpdateTimebase(uint32_t time)
+{
+	uint32_t tmp = LED_Timebase - uwTick;
+	uwTick = time;
+	LED_Timebase = uwTick + tmp;
 }
 
 

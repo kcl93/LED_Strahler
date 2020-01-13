@@ -43,21 +43,15 @@ void LED_NRF24L01_Init(void)
 	NRF24L01_SetRF(LED_NRF24L01_DATARATE, LED_NRF24L01_OUTPUT_POWER); /* Set RF settings */
 
 	NRF24L01_CE_LOW;
-	OwnAddress = LED_NRF24LO1_BROADCAST_ADDR;
+	OwnAddress = LED_NRF24L01_BROADCAST_ADDR;
 	NRF24L01_WriteRegisterMulti(NRF24L01_REG_TX_ADDR, (uint8_t*)&OwnAddress, 4);	//Setup transmit address
-
 	NRF24L01_WriteRegisterMulti(NRF24L01_REG_RX_ADDR_P0, (uint8_t*)&OwnAddress, 4);	//Setup receive address
 	OwnAddress = LED_NRF24L01_BASE_ADDR;
-	NRF24L01_WriteRegisterMulti(NRF24L01_REG_RX_ADDR_P1, (uint8_t*)&OwnAddress, 4);
+	NRF24L01_WriteRegisterMulti(NRF24L01_REG_RX_ADDR_P1, (uint8_t*)&OwnAddress, 4);	//Setup receive address
 	NRF24L01_CE_HIGH;
 
 	/* Go to RX mode */
 	NRF24L01_PowerUpTx();
-
-	for(uint8_t i = 0; i <= 0x1D; i++)
-	{
-		NRF24L01_ReadRegister(i);
-	}
 }
 
 
@@ -110,20 +104,4 @@ void LED_NRF24L01_Send(uint8_t* data)
 	LED_NRF24L01_WaitTx(5);
 	//Send new data
 	NRF24L01_Transmit(data);
-}
-
-
-void LED_NRF24L01_Send(uint8_t* data, uint32_t addr)
-{
-	//Wait for previous transfer to finish
-	LED_NRF24L01_WaitTx(5);
-	//Set new TxAddress
-	//NRF24L01_WriteRegisterMulti(NRF24L01_REG_TX_ADDR, (uint8_t*)&addr, 4);
-	//Send new data
-	NRF24L01_Transmit(data);
-	//Wait for previous transfer to finish
-	//LED_NRF24L01_WaitTx(5);
-	//Reset to broadcast TxAddress
-	//addr = LED_NRF24LO1_BROADCAST_ADDR;
-	//NRF24L01_WriteRegisterMulti(NRF24L01_REG_TX_ADDR, (uint8_t*)&addr, 4);
 }

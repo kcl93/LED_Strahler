@@ -52,22 +52,26 @@ void LED_NRF24L01_Init(void)
 
 	OwnGroup = 0;
 
+	//Init SPI interface
+	NRF24L01_SPI_Send(0x55);
+
 	NRF24L01_Init(LED_NRF24L01_CHANNEL, LED_NRF24L01_PAYLOAD); // Do basic init
 
 	NRF24L01_SetRF(LED_NRF24L01_DATARATE, LED_NRF24L01_OUTPUT_POWER); /* Set RF settings */
 
+	NRF24L01_CE_LOW;
 	OwnAddress = LED_NRF24L01_BASE_ADDR;
 	NRF24L01_WriteRegisterMulti(NRF24L01_REG_TX_ADDR, (uint8_t*)&OwnAddress, 4);	//Setup transmit address
-
-	NRF24L01_CE_LOW;
-	OwnAddress = LED_NRF24LO1_BROADCAST_ADDR;	//Setup pipe 0 for RX
-	NRF24L01_WriteRegisterMulti(NRF24L01_REG_RX_ADDR_P0, (uint8_t*)&OwnAddress, 4);
-	OwnAddress = wrapper[0] ^ wrapper[1] ^ wrapper[2] ^ wrapper[3] ^ wrapper[4] ^ wrapper[5];	//Calculate own address
-	NRF24L01_WriteRegisterMulti(NRF24L01_REG_RX_ADDR_P1, (uint8_t*)&OwnAddress, 4);
+	NRF24L01_WriteRegisterMulti(NRF24L01_REG_RX_ADDR_P0, (uint8_t*)&OwnAddress, 4); //Store main broadcast receive address
+	OwnAddress = LED_NRF24L01_BROADCAST_ADDR;	//Setup pipe 0 for RX
+	NRF24L01_WriteRegisterMulti(NRF24L01_REG_RX_ADDR_P1, (uint8_t*)&OwnAddress, 4); //Store main broadcast receive address
 	NRF24L01_CE_HIGH;
 
 	/* Go to RX mode */
 	NRF24L01_PowerUpRx();
+
+	//Calculate own unique address
+	OwnAddress = wrapper[0] ^ wrapper[1] ^ wrapper[2] ^ wrapper[3] ^ wrapper[4] ^ wrapper[5];	//Calculate own address
 }
 
 
@@ -84,9 +88,11 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 void LED_NRF24L01_IRQ(void)
 {
 	union NRF24L01_DataPacket packet;
+	uint8_t status;
 
 	/* Read interrupts, If data is ready on NRF24L01+ */
-	if (NRF24L01_GetStatus() & (1 << NRF24L01_RX_DR))
+	status = NRF24L01_Clear_Interrupts(); //Reads status register and then clears it
+	while (status & (1 << NRF24L01_RX_DR))
 	{
 		/* Get data from NRF24L01+ */
 		NRF24L01_GetData(packet.Data);
@@ -145,10 +151,35 @@ void LED_NRF24L01_IRQ(void)
 			default:
 				break;
 		}
+		status = NRF24L01_Clear_Interrupts(); //Reads status register and then clears it
 	}
+}
 
-	/* Clear interrupts */
-	NRF24L01_Clear_Interrupts();
+
+void LED_NRF24L01_WaitTx(uint8_t timeout)
+{
+	uint32_t starttime;
+	uint8_t status;
+
+	//Wait for previous transfer to finish or timeout
+	starttime = HAL_GetTick();
+	while((HAL_GetTick() - starttime) < timeout)
+	{
+		status = NRF24L01_GetStatus();
+		if (!NRF24L01_CHECK_BIT(status, NRF24L01_TX_FULL))
+		{
+			break; //New data can be sent once there is some free room in the TX FIFO :)
+		}
+	}
+}
+
+
+void LED_NRF24L01_Send(uint8_t* data)
+{
+	//Wait for previous transfer to finish or timeout
+	LED_NRF24L01_WaitTx(5);
+	//Send new data
+	NRF24L01_Transmit(data);
 }
 
 
@@ -159,23 +190,17 @@ inline void Exec_PingRequest(struct NRF24L01_PingRequest packet)
 	((struct NRF24L01_PingAnswer*)&packet)->SlaveAddress = OwnAddress;
 	//Wait for a random time before answering
 	HAL_Delay((uint8_t)(OwnAddress));
-	NRF24L01_Transmit((uint8_t*)&packet);
-	while(NRF24L01_GetTransmissionStatus() == NRF24L01_Transmit_Status_Sending);
-	NRF24L01_PowerUpRx();
+	LED_NRF24L01_Send((uint8_t*)&packet);
 	//Wait again for a random time before answering
 	HAL_Delay((uint8_t)(OwnAddress >> 8));
-	NRF24L01_Transmit((uint8_t*)&packet);
-	while(NRF24L01_GetTransmissionStatus() == NRF24L01_Transmit_Status_Sending);
-	NRF24L01_PowerUpRx();
+	LED_NRF24L01_Send((uint8_t*)&packet);
 	//Wait again for a random time before answering
 	HAL_Delay((uint8_t)(OwnAddress >> 16));
-	NRF24L01_Transmit((uint8_t*)&packet);
-	while(NRF24L01_GetTransmissionStatus() == NRF24L01_Transmit_Status_Sending);
-	NRF24L01_PowerUpRx();
+	LED_NRF24L01_Send((uint8_t*)&packet);
 	//Wait again for a random time before answering
 	HAL_Delay((uint8_t)(OwnAddress >> 24));
-	NRF24L01_Transmit((uint8_t*)&packet);
-	while(NRF24L01_GetTransmissionStatus() == NRF24L01_Transmit_Status_Sending);
+	LED_NRF24L01_Send((uint8_t*)&packet);
+	LED_NRF24L01_WaitTx(5);
 	NRF24L01_PowerUpRx();
 }
 
@@ -193,7 +218,7 @@ inline void Exec_SetGroup(struct NRF24L01_SetGroup packet)
 
 inline void Exec_SetTimebase(struct NRF24L01_SetTimebase packet)
 {
-	uwTick = packet.Timebase;
+	LED_UpdateTimebase(packet.Timebase);
 }
 
 

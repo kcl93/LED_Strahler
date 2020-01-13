@@ -47,6 +47,9 @@ default.size.stdout \
 OBJDUMP_LIST += \
 LED_Strahler.list \
 
+OBJCOPY_BIN += \
+LED_Strahler.bin \
+
 
 # All Target
 all: LED_Strahler.elf secondary-outputs
@@ -67,12 +70,17 @@ LED_Strahler.list: $(EXECUTABLES)
 	@echo 'Finished building: $@'
 	@echo ' '
 
+LED_Strahler.bin: $(EXECUTABLES)
+	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "LED_Strahler.bin"
+	@echo 'Finished building: $@'
+	@echo ' '
+
 # Other Targets
 clean:
 	-$(RM) *
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_BIN)
 
 .PHONY: all clean dependents
 .SECONDARY:

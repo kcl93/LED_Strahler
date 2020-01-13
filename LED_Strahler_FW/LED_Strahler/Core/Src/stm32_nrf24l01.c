@@ -69,7 +69,9 @@ uint8_t NRF24L01_Init(uint8_t channel, uint8_t payload_size) {
 	
 	/* Reset nRF24L01+ to power on registers values */
 	NRF24L01_SoftwareReset();
-	
+ 
+	NRF24L01_GetStatus();
+
 	/* Channel select */
 	NRF24L01_SetChannel(channel);
 	
@@ -100,13 +102,17 @@ uint8_t NRF24L01_Init(uint8_t channel, uint8_t payload_size) {
 	NRF24L01_WriteRegister(NRF24L01_REG_EN_RXADDR, ((1 << NRF24L01_ERX_P0) | (1 << NRF24L01_ERX_P1)));
 
 	/* Auto retransmit delay: 1000 (4x250) us and Up to 15 retransmit trials */
-	NRF24L01_WriteRegister(NRF24L01_REG_SETUP_RETR, 0x4F);
+	//NRF24L01_WriteRegister(NRF24L01_REG_SETUP_RETR, 0x4F);
+	NRF24L01_WriteRegister(NRF24L01_REG_SETUP_RETR, 0x00);
 	
 	/* Dynamic length configurations: No dynamic length */
 	NRF24L01_WriteRegister(NRF24L01_REG_DYNPD, (0 << NRF24L01_DPL_P0) | (0 << NRF24L01_DPL_P1) | (0 << NRF24L01_DPL_P2) | (0 << NRF24L01_DPL_P3) | (0 << NRF24L01_DPL_P4) | (0 << NRF24L01_DPL_P5));
 	
 	// Set address length to 4 bytes
 	NRF24L01_WriteRegister(NRF24L01_REG_SETUP_AW, (0x02 << NRF24L01_AW));
+
+	//Enable dynamic ACK
+	NRF24L01_WriteRegister(NRF24L01_REG_FEATURE, 0x01);
 
 	/* Clear FIFOs */
 	NRF24L01_FLUSH_TX;
@@ -157,16 +163,19 @@ uint8_t NRF24L01_ReadBit(uint8_t reg, uint8_t bit) {
 }
 
 uint8_t NRF24L01_ReadRegister(uint8_t reg) {
-	uint8_t value;
+	uint8_t Data[2];
+	Data[0] = NRF24L01_READ_REGISTER_MASK(reg);
+	Data[1] = 0;
 	NRF24L01_CSN_LOW;
-	NRF24L01_SPI_Send(NRF24L01_READ_REGISTER_MASK(reg));
-	value = NRF24L01_SPI_Send(NRF24L01_NOP_MASK);
+	NRF24L01_SPI_SendMulti(Data, Data, 2);
+											  
 	NRF24L01_CSN_HIGH;
-	
-	return value;
+ 
+	return Data[1];
 }
 
-void NRF24L01_ReadRegisterMulti(uint8_t reg, uint8_t* data, uint8_t count) {
+void NRF24L01_ReadRegisterMulti(uint8_t reg, uint8_t* data, uint8_t count)
+{
 	NRF24L01_CSN_LOW;
 	NRF24L01_SPI_Send(NRF24L01_READ_REGISTER_MASK(reg));
 	NRF24L01_SPI_ReadMulti(data, NRF24L01_NOP_MASK, count);
@@ -218,7 +227,7 @@ void NRF24L01_Transmit(uint8_t *data) {
 	uint8_t count = NRF24L01_Struct.PayloadSize;
 
 	/* Chip enable put to low, disable it */
-	NRF24L01_CE_LOW;
+	//NRF24L01_CE_LOW;
 	
 	/* Go to power up tx mode */
 	NRF24L01_PowerUpTx();
@@ -229,7 +238,8 @@ void NRF24L01_Transmit(uint8_t *data) {
 	/* Send payload to nRF24L01+ */
 	NRF24L01_CSN_LOW;
 	/* Send write payload command */
-	NRF24L01_SPI_Send(NRF24L01_W_TX_PAYLOAD_MASK);
+	//NRF24L01_SPI_Send(NRF24L01_W_TX_PAYLOAD_MASK);
+	NRF24L01_SPI_Send(NRF24L01_W_TX_PAYLOAD_NOACK_MASK);
 	/* Fill payload with data*/
 	NRF24L01_SPI_WriteMulti(data, count);
 	/* Disable SPI */
@@ -250,7 +260,7 @@ void NRF24L01_GetData(uint8_t* data) {
 	NRF24L01_CSN_HIGH;
 	
 	/* Reset status register, clear RX_DR interrupt flag */
-	NRF24L01_WriteRegister(NRF24L01_REG_STATUS, (1 << NRF24L01_RX_DR));
+	//NRF24L01_WriteRegister(NRF24L01_REG_STATUS, (1 << NRF24L01_RX_DR));
 }
 
 uint8_t NRF24L01_DataReady(void) {
@@ -268,15 +278,15 @@ uint8_t NRF24L01_RxFifoEmpty(void) {
 }
 
 uint8_t NRF24L01_GetStatus(void) {
-	uint8_t status;
+	uint8_t Data;
 	
 	NRF24L01_CSN_LOW;
 	/* First received byte is always status register */
-	status = NRF24L01_SPI_Send(NRF24L01_NOP_MASK);
+	Data = NRF24L01_SPI_Send(NRF24L01_READ_REGISTER_MASK(NRF24L01_REG_STATUS));
 	/* Pull up chip select */
 	NRF24L01_CSN_HIGH;
 	
-	return status;
+	return Data;
 }
 
 NRF24L01_Transmit_Status_t NRF24L01_GetTransmissionStatus(void) {

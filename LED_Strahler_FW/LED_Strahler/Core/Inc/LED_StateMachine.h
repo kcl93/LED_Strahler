@@ -22,6 +22,7 @@
 
 void LED_StateMachine_Init(void);
 void LED_StateMachine_Handle(void);
+void LED_UpdateTimebase(uint32_t time);
 void LED_SetModeRGB(uint16_t red, uint16_t green, uint16_t blue);
 void LED_SetModeRGBW(uint16_t red, uint16_t green, uint16_t blue, uint16_t white);
 void LED_SetModeHSV(uint16_t hue, uint16_t saturation, uint16_t value);

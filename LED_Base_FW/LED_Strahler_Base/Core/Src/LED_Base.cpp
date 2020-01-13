@@ -141,7 +141,7 @@ inline void ExecGetTemperature(NRF24L01_DataPacket *cmd)
 	char buf[16];
 
 	cmd->CMD = CMD_GETTEMPERATURE;
-	LED_NRF24L01_Send(cmd->Data, cmd->GetTemperature.SlaveAddress); //Ask for temperature
+	LED_NRF24L01_Send(cmd->Data); //Ask for temperature
 
 	//Wait for transfer to finish
 	while(NRF24L01_GetTransmissionStatus() == NRF24L01_Transmit_Status_Sending);

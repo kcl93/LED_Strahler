@@ -118,7 +118,7 @@ void USART_Handler::Println(char *c)
 
 bool USART_Handler::Busy(void)
 {
-	if((this->huart->hdmatx->State == HAL_DMA_STATE_BUSY) || (huart->gState != HAL_UART_STATE_READY))
+	if(/*(this->huart->hdmatx->State == HAL_DMA_STATE_BUSY) || */(huart->gState != HAL_UART_STATE_READY))
 	{
 		return true;
 	}

@@ -10,7 +10,6 @@
 
 
 
-
 extern SPI_HandleTypeDef NRF24L01_SPI_HANDLE;
 
 
@@ -69,5 +68,3 @@ void NRF24L01_SPI_SendMulti(uint8_t* dataOut, uint8_t* dataIn, uint32_t count)
 		dataIn++;
 	}
 }
-
-
