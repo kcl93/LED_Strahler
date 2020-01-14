@@ -36,7 +36,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <wpfTool:ColorPicker Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Name="ColorPicker" UsingAlphaChannel="False" DisplayColorAndName="True" SelectedColor="Black" ShowRecentColors="True"/>
+            <wpfTool:ColorPicker Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Name="RGBColorPicker" UsingAlphaChannel="False" DisplayColorAndName="True" ShowRecentColors="True" SelectedColor="{Binding ColorPickerColor}"/>
             <Label Grid.Row="1" Grid.Column="0" Content="Hue"/>
             <wpfTool:RangeSlider Grid.Row="2" Grid.Column="0" Name="HueSlider" Minimum="0" Maximum="255" LowerValue="{Binding HueMinalue}" HigherValue="{Binding HueMaxValue}"/>
             <RadioButton Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="RB_Hue" GroupName="TargetGroup" IsChecked="True"/>

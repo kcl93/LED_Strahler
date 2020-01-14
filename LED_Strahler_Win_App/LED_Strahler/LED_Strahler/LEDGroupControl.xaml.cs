@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Xceed.Wpf.Toolkit;
 
 namespace LED_Strahler_GUI
 {
@@ -48,6 +49,19 @@ namespace LED_Strahler_GUI
             set { _Group = value; NotifyPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Color from the color picker
+        /// </summary>
+        private Color _ColorPickerColor = Color.FromRgb(0, 0 ,0);
+        public Color ColorPickerColor
+        {
+            get { return _ColorPickerColor; }
+            set { _ColorPickerColor = value; NotifyPropertyChanged(); }
+        }
+
+        /// <summary>
+        /// Red color value
+        /// </summary>
         private ushort _RedValue = 0;
         public ushort RedValue
         {
@@ -55,6 +69,9 @@ namespace LED_Strahler_GUI
             set { _RedValue = value; NotifyPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Green color value
+        /// </summary>
         private ushort _GreenValue = 0;
         public ushort GreenValue
         {
@@ -62,6 +79,9 @@ namespace LED_Strahler_GUI
             set { _GreenValue = value; NotifyPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Blue color value
+        /// </summary>
         private ushort _BlueValue = 0;
         public ushort BlueValue
         {
@@ -69,6 +89,9 @@ namespace LED_Strahler_GUI
             set { _BlueValue = value; NotifyPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Hue min slider value
+        /// </summary>
         private ushort _HueMinValue = 0;
         public ushort HueMinValue
         {
@@ -76,6 +99,9 @@ namespace LED_Strahler_GUI
             set { _HueMinValue = value; NotifyPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Hue max slider value
+        /// </summary>
         private ushort _HueMaxValue = 0;
         public ushort HueMaxValue
         {
@@ -83,6 +109,9 @@ namespace LED_Strahler_GUI
             set { _HueMaxValue = value; NotifyPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Saturation min slider value
+        /// </summary>
         private ushort _SaturationMinValue = 0;
         public ushort SaturationMinValue
         {
@@ -90,6 +119,9 @@ namespace LED_Strahler_GUI
             set { _SaturationMinValue = value; NotifyPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Saturation max slider value
+        /// </summary>
         private ushort _SaturationMaxValue = 0;
         public ushort SaturationMaxValue
         {
@@ -97,6 +129,9 @@ namespace LED_Strahler_GUI
             set { _SaturationMaxValue = value; NotifyPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Value min slider value
+        /// </summary>
         private ushort _ValueMinValue = 0;
         public ushort ValueValue
         {
@@ -104,6 +139,9 @@ namespace LED_Strahler_GUI
             set { _ValueMinValue = value; NotifyPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Value max slider value
+        /// </summary>
         private ushort _ValueMaxValue = 0;
         public ushort ValueMaxValue
         {
@@ -111,6 +149,9 @@ namespace LED_Strahler_GUI
             set { _ValueMaxValue = value; NotifyPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Period slider value
+        /// </summary>
         private ushort _PeriodValue = 0;
         public ushort PeriodValue
         {
@@ -118,6 +159,9 @@ namespace LED_Strahler_GUI
             set { _PeriodValue = value; NotifyPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Live control checkbox value
+        /// </summary>
         private bool _LiveControl = false;
         public bool LiveControl
         {
@@ -125,6 +169,9 @@ namespace LED_Strahler_GUI
             set { _LiveControl = value; NotifyPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Music control checkbox value
+        /// </summary>
         private bool _MusicControl = false;
         public bool MusicControl
         {
