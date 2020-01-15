@@ -38,13 +38,13 @@
             </Grid.RowDefinitions>
             <wpfTool:ColorPicker Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Name="RGBColorPicker" UsingAlphaChannel="False" DisplayColorAndName="True" ShowRecentColors="True" SelectedColor="{Binding ColorPickerColor}"/>
             <Label Grid.Row="1" Grid.Column="0" Content="Hue"/>
-            <wpfTool:RangeSlider Grid.Row="2" Grid.Column="0" Name="HueSlider" Minimum="0" Maximum="255" LowerValue="{Binding HueMinalue}" HigherValue="{Binding HueMaxValue}"/>
+            <wpfTool:RangeSlider Grid.Row="2" Grid.Column="0" Name="HueSlider" Minimum="0" Maximum="36000" LowerValue="{Binding HueMinValue}" HigherValue="{Binding HueMaxValue}"/>
             <RadioButton Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="RB_Hue" GroupName="TargetGroup" IsChecked="True"/>
             <Label Grid.Row="3" Grid.Column="0" Content="Saturation"/>
-            <wpfTool:RangeSlider Grid.Row="4" Grid.Column="0" Name="SaturationSlider" Minimum="0" Maximum="255" LowerValue="{Binding SaturationMinValue}" HigherValue="{Binding SaturationMaxValue}"/>
+            <wpfTool:RangeSlider Grid.Row="4" Grid.Column="0" Name="SaturationSlider" Minimum="0" Maximum="10000" LowerValue="{Binding SaturationMinValue}" HigherValue="{Binding SaturationMaxValue}"/>
             <RadioButton Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Name="RB_Saturation" GroupName="TargetGroup"/>
             <Label Grid.Row="5" Grid.Column="0" Content="Value"/>
-            <wpfTool:RangeSlider Grid.Row="6" Grid.Column="0" Name="ValueSlider" Minimum="0" Maximum="255" LowerValue="{Binding ValueMinValue}" HigherValue="{Binding ValueMaxValue}"/>
+            <wpfTool:RangeSlider Grid.Row="6" Grid.Column="0" Name="ValueSlider" Minimum="0" Maximum="10000" LowerValue="{Binding ValueMinValue}" HigherValue="{Binding ValueMaxValue}"/>
             <RadioButton Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Name="RB_Value" GroupName="TargetGroup"/>
             <Label Grid.Row="7" Grid.Column="0" Content="Fade/Strobe period"/>
             <Slider Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Name="PeriodSlider" Maximum="65535" SmallChange="1" Value="{Binding PeriodValue}"/>

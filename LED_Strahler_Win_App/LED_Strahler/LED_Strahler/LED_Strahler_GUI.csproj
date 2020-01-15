@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ColorMine, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ColorMine.1.1.3.0\lib\ColorMine.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -86,6 +89,7 @@
       <DependentUpon>LEDGroupControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="LED_Strahler.cs" />
+    <Compile Include="LED_Strahler_Backend.cs" />
     <Compile Include="LED_Strahler_Commands.cs" />
     <Compile Include="LED_Strahler_Serial.cs" />
     <Compile Include="MainWindow.xaml.cs">

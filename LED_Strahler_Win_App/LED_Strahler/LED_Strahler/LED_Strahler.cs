@@ -21,6 +21,8 @@
         }
         #endregion
 
+        LED_Strahler_Serial Serial = new LED_Strahler_Serial();
+
         #region Properties
 
         private int _UUID = 0;

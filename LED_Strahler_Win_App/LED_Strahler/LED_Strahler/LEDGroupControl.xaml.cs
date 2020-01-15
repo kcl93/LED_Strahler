@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Xceed.Wpf.Toolkit;
+using ColorMine.ColorSpaces;
 
 namespace LED_Strahler_GUI
 {
@@ -52,41 +53,74 @@ namespace LED_Strahler_GUI
         /// <summary>
         /// Color from the color picker
         /// </summary>
-        private Color _ColorPickerColor = Color.FromRgb(0, 0 ,0);
         public Color ColorPickerColor
         {
-            get { return _ColorPickerColor; }
-            set { _ColorPickerColor = value; NotifyPropertyChanged(); }
+            get { return Color.FromRgb(RedValue, GreenValue, BlueValue); }
+            set
+            {
+                if((value.R != RedValue) || (value.G != GreenValue) || (value.B != BlueValue))
+                {
+                    RedValue = value.R;
+                    GreenValue = value.G;
+                    BlueValue = value.B;
+                    NotifyPropertyChanged();
+                    UpdateHsvFromRgb();
+                }
+            }
         }
 
         /// <summary>
         /// Red color value
         /// </summary>
-        private ushort _RedValue = 0;
-        public ushort RedValue
+        private byte _RedValue = 0;
+        public byte RedValue
         {
             get { return _RedValue; }
-            set { _RedValue = value; NotifyPropertyChanged(); }
+            set
+            {
+                if (_RedValue != value)
+                {
+                    _RedValue = value;
+                    NotifyPropertyChanged();
+                    UpdateHsvFromRgb();
+                }
+            }
         }
 
         /// <summary>
         /// Green color value
         /// </summary>
-        private ushort _GreenValue = 0;
-        public ushort GreenValue
+        private byte _GreenValue = 0;
+        public byte GreenValue
         {
             get { return _GreenValue; }
-            set { _GreenValue = value; NotifyPropertyChanged(); }
+            set
+            {
+                if (_GreenValue != value)
+                {
+                    _GreenValue = value;
+                    NotifyPropertyChanged();
+                    UpdateHsvFromRgb();
+                }
+            }
         }
 
         /// <summary>
         /// Blue color value
         /// </summary>
-        private ushort _BlueValue = 0;
-        public ushort BlueValue
+        private byte _BlueValue = 0;
+        public byte BlueValue
         {
             get { return _BlueValue; }
-            set { _BlueValue = value; NotifyPropertyChanged(); }
+            set
+            {
+                if(_BlueValue != value)
+                {
+                    _BlueValue = value;
+                    NotifyPropertyChanged();
+                    UpdateHsvFromRgb();
+                }
+            }
         }
 
         /// <summary>
@@ -96,7 +130,18 @@ namespace LED_Strahler_GUI
         public ushort HueMinValue
         {
             get { return _HueMinValue; }
-            set { _HueMinValue = value; NotifyPropertyChanged(); }
+            set
+            {
+                if(_HueMinValue != value)
+                {
+                    if (_HueMaxValue < value)
+                    {
+                        HueMaxValue = value;
+                    }
+                    _HueMinValue = value;
+                    NotifyPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -106,7 +151,19 @@ namespace LED_Strahler_GUI
         public ushort HueMaxValue
         {
             get { return _HueMaxValue; }
-            set { _HueMaxValue = value; NotifyPropertyChanged(); }
+            set
+            {
+                if(_HueMaxValue != value)
+                {
+                    _HueMaxValue = value;
+                    if (_HueMinValue > value)
+                    {
+                        HueMinValue = value;
+                    }
+                    NotifyPropertyChanged();
+                    UpdateRgbFromHsv();
+                }
+            }
         }
 
         /// <summary>
@@ -116,7 +173,18 @@ namespace LED_Strahler_GUI
         public ushort SaturationMinValue
         {
             get { return _SaturationMinValue; }
-            set { _SaturationMinValue = value; NotifyPropertyChanged(); }
+            set
+            {
+                if(_SaturationMinValue != value)
+                {
+                    if (_SaturationMaxValue < value)
+                    {
+                        SaturationMaxValue = value;
+                    }
+                    _SaturationMinValue = value;
+                    NotifyPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -126,17 +194,40 @@ namespace LED_Strahler_GUI
         public ushort SaturationMaxValue
         {
             get { return _SaturationMaxValue; }
-            set { _SaturationMaxValue = value; NotifyPropertyChanged(); }
+            set
+            {
+                if(_SaturationMaxValue != value)
+                {
+                    _SaturationMaxValue = value;
+                    if (_SaturationMinValue > value)
+                    {
+                        SaturationMinValue = value;
+                    }
+                    NotifyPropertyChanged();
+                    UpdateRgbFromHsv();
+                }
+            }
         }
 
         /// <summary>
         /// Value min slider value
         /// </summary>
         private ushort _ValueMinValue = 0;
-        public ushort ValueValue
+        public ushort ValueMinValue
         {
             get { return _ValueMinValue; }
-            set { _ValueMinValue = value; NotifyPropertyChanged(); }
+            set
+            {
+                if(_ValueMinValue != value)
+                {
+                    if (_ValueMaxValue < value)
+                    {
+                        ValueMaxValue = value;
+                    }
+                    _ValueMinValue = value;
+                    NotifyPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -146,17 +237,39 @@ namespace LED_Strahler_GUI
         public ushort ValueMaxValue
         {
             get { return _ValueMaxValue; }
-            set { _ValueMaxValue = value; NotifyPropertyChanged(); }
+            set
+            {
+                if(_ValueMaxValue != value)
+                {
+                    _ValueMaxValue = value;
+                    if (_ValueMinValue > value)
+                    {
+                        ValueMinValue = value;
+                    }
+                    NotifyPropertyChanged();
+                    UpdateRgbFromHsv();
+                }
+            }
         }
 
         /// <summary>
-        /// Period slider value
+        /// Period slider value for strobes and fading
         /// </summary>
         private ushort _PeriodValue = 0;
         public ushort PeriodValue
         {
             get { return _PeriodValue; }
             set { _PeriodValue = value; NotifyPropertyChanged(); }
+        }
+
+        /// <summary>
+        /// Strobe count slider value
+        /// </summary>
+        private ushort _StrobeCountValue = 0;
+        public ushort StrobeCountValue
+        {
+            get { return _StrobeCountValue; }
+            set { _StrobeCountValue = value; NotifyPropertyChanged(); }
         }
 
         /// <summary>
@@ -185,5 +298,76 @@ namespace LED_Strahler_GUI
         {
             InitializeComponent();
         }
+
+        #region Helper methods
+
+        private void UpdateHsvFromRgb()
+        {
+            Rgb rgb = new Rgb() { R = this.RedValue, G = this.GreenValue, B = this.BlueValue };
+            Hsv hsv = rgb.To<Hsv>();
+
+            if (this.HueMaxValue != (ushort)hsv.H)
+            {
+                this._HueMaxValue = (ushort)(100.0 * hsv.H);
+                if(this.HueMinValue > this._HueMaxValue)
+                {
+                    this._HueMinValue = this._HueMaxValue;
+                    this.NotifyPropertyChanged("HueMinValue");
+                }
+                this.NotifyPropertyChanged("HueMaxValue");
+            }
+
+            if (this.SaturationMaxValue != (ushort)(10000.0 * hsv.S))
+            {
+                this._SaturationMaxValue = (ushort)(10000.0 * hsv.S);
+                if (this.SaturationMinValue > this._SaturationMaxValue)
+                {
+                    this._SaturationMinValue = this._SaturationMaxValue;
+                    this.NotifyPropertyChanged("HueMinValue");
+                }
+                this.NotifyPropertyChanged("SaturationMaxValue");
+            }
+
+            if (this.ValueMaxValue != (ushort)(10000.0 * hsv.V))
+            {
+                this._ValueMaxValue = (ushort)(10000.0 * hsv.V);
+                if (this.ValueMinValue > this._ValueMaxValue)
+                {
+                    this._ValueMinValue = this._ValueMaxValue;
+                    this.NotifyPropertyChanged("ValueMinValue");
+                }
+                this.NotifyPropertyChanged("ValueMaxValue");
+            }
+
+            this.NotifyPropertyChanged("ColorPickerColor");
+        }
+
+        private void UpdateRgbFromHsv()
+        {
+            Hsv hsv = new Hsv() { H = (double)this.HueMaxValue / 100.0, S = (double)this.SaturationMaxValue / 10000.0, V = (double)this.ValueMaxValue / 10000.0 };
+            Rgb rgb = hsv.To<Rgb>();
+
+            if (this.RedValue != (byte)rgb.R)
+            {
+                this._RedValue = (byte)rgb.R;
+                this.NotifyPropertyChanged("RedValue");
+            }
+
+            if (this.GreenValue != (byte)rgb.G)
+            {
+                this._GreenValue = (byte)rgb.G;
+                this.NotifyPropertyChanged("GreenValue");
+            }
+
+            if (this.BlueValue != (byte)rgb.B)
+            {
+                this._BlueValue = (byte)rgb.B;
+                this.NotifyPropertyChanged("BlueValue");
+            }
+
+            this.NotifyPropertyChanged("ColorPickerColor");
+        }
+
+        #endregion
     }
 }

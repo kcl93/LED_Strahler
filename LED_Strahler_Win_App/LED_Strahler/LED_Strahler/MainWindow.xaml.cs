@@ -34,6 +34,8 @@ namespace LED_Strahler_GUI
             }
         #endregion
 
+        private LED_Strahler_Backend Backend = null;
+
         #region Properties
         public List<LED_Strahler> DeviceList { get; set; } = new List<LED_Strahler> { };
         public List<string> AvailableGroups { get; set; } = new List<string>()
@@ -45,6 +47,13 @@ namespace LED_Strahler_GUI
             "Group 4",
             "Group 5"
         };
+
+        private List<string> _ComPortList = new List<string>();
+        public List<string> ComPortList
+        {
+            get { return _ComPortList; }
+            set { _ComPortList = value; NotifyPropertyChanged(); }
+        }
         #endregion
 
         #region Constructor
@@ -56,7 +65,7 @@ namespace LED_Strahler_GUI
             DeviceList.Add(new LED_Strahler(987654321));
             DeviceList.Add(new LED_Strahler(123581347));
 
-
+            Backend = new LED_Strahler_Backend(this);
         }
         #endregion
     }
