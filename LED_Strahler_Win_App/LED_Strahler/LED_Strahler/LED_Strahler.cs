@@ -39,6 +39,13 @@
             set { _Group = value; NotifyPropertyChanged(); }
         }
 
+        private double _Temperature = 0.0;
+        public double Temperature
+        {
+            get { return _Temperature; }
+            set { _Temperature = value; NotifyPropertyChanged(); }
+        }
+
         private bool _TestState = false;
         public bool TestState
         {

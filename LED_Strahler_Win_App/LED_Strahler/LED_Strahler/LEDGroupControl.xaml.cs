@@ -39,16 +39,23 @@ namespace LED_Strahler_GUI
         #endregion
 
         #region Properties
+        public LED_Strahler_Serial Serial { get; set; } = null;
 
         /// <summary>
         /// Group name of the control
         /// </summary>
-        private string _Group = "Broadcast";
         public string Group
         {
-            get { return _Group; }
-            set { _Group = value; NotifyPropertyChanged(); }
+            get
+            {
+                if(GroupID == 0)
+                {
+                    return "Broadcast";
+                }
+                return "Group " + GroupID;
+            }
         }
+        public byte GroupID { get; set; }
 
         /// <summary>
         /// Color from the color picker
@@ -60,9 +67,9 @@ namespace LED_Strahler_GUI
             {
                 if((value.R != Convert.ToByte(RedValue / 257.0)) || (value.G != Convert.ToByte(GreenValue / 257.0)) || (value.B != Convert.ToByte(BlueValue / 257.0)))
                 {
-                    RedValue = 257 * value.R;
-                    GreenValue = 257 * value.G;
-                    BlueValue = 257 * value.B;
+                    RedValue = (ushort)(257 * value.R);
+                    GreenValue = (ushort)(257 * value.G);
+                    BlueValue = (ushort)(257 * value.B);
                     NotifyPropertyChanged();
                     UpdateHsvFromRgb();
                 }
@@ -279,7 +286,19 @@ namespace LED_Strahler_GUI
         public bool LiveControl
         {
             get { return _LiveControl; }
-            set { _LiveControl = value; NotifyPropertyChanged(); }
+            set
+            {
+                _LiveControl = value;
+                NotifyPropertyChanged();
+                if(_LiveControl || _MusicControl)
+                {
+                    EnableButtons = false;
+                }
+                else
+                {
+                    EnableButtons = true;
+                }
+            }
         }
 
         /// <summary>
@@ -289,7 +308,29 @@ namespace LED_Strahler_GUI
         public bool MusicControl
         {
             get { return _MusicControl; }
-            set { _MusicControl = value; NotifyPropertyChanged(); }
+            set
+            {
+                _MusicControl = value;
+                NotifyPropertyChanged();
+                if (_LiveControl || _MusicControl)
+                {
+                    EnableButtons = false;
+                }
+                else
+                {
+                    EnableButtons = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Enable buttons value
+        /// </summary>
+        private bool _EnableButtons = true;
+        public bool EnableButtons
+        {
+            get { return _EnableButtons; }
+            set { _EnableButtons = value; NotifyPropertyChanged(); }
         }
 
         #endregion
@@ -297,9 +338,38 @@ namespace LED_Strahler_GUI
         public LEDGroupControl()
         {
             InitializeComponent();
+
+            this.RB_Hue.IsChecked = true;
+            this.RB_SetButton.IsChecked = true;
         }
 
         #region Helper methods
+
+        public void SetButtonClick(object sender, RoutedEventArgs e)
+        {
+            Serial.SetRGB(this.GroupID, this.RedValue, this.GreenValue, this.BlueValue);
+        }
+
+        public void StrobeButtonClick(object sender, RoutedEventArgs e)
+        {
+            Serial.StrobeRGB(this.GroupID, this.PeriodValue, this.StrobeCountValue, this.RedValue, this.GreenValue, this.BlueValue);
+        }
+
+        public void FadeButtonClick(object sender, RoutedEventArgs e)
+        {
+            if(this.RB_Hue.IsChecked == true)
+            {
+                Serial.FadeHue(this.GroupID, this.PeriodValue, this.HueMinValue, this.HueMaxValue, this.SaturationMaxValue, this.ValueMaxValue);
+            }
+            else if (this.RB_Saturation.IsChecked == true)
+            {
+                Serial.FadeSaturation(this.GroupID, this.PeriodValue, this.HueMaxValue, this.SaturationMinValue, this.SaturationMaxValue, this.ValueMaxValue);
+            }
+            else if (this.RB_Value.IsChecked == true)
+            {
+                Serial.FadeValue(this.GroupID, this.PeriodValue, this.HueMaxValue, this.SaturationMaxValue, this.ValueMinValue, this.ValueMaxValue);
+            }
+        }
 
         private void UpdateHsvFromRgb()
         {

@@ -37,10 +37,12 @@ namespace LED_Strahler_GUI
         private LED_Strahler_Backend Backend = null;
 
         #region Properties
+
         public List<LED_Strahler> DeviceList { get; set; } = new List<LED_Strahler> { };
+
         public List<string> AvailableGroups { get; set; } = new List<string>()
         {
-            "No group",
+            "Broadcast",
             "Group 1",
             "Group 2",
             "Group 3",
@@ -54,19 +56,31 @@ namespace LED_Strahler_GUI
             get { return _ComPortList; }
             set { _ComPortList = value; NotifyPropertyChanged(); }
         }
+
         #endregion
 
         #region Constructor
+
         public MainWindow()
         {
             InitializeComponent();
 
-            DeviceList.Add(new LED_Strahler(123456789));
-            DeviceList.Add(new LED_Strahler(987654321));
-            DeviceList.Add(new LED_Strahler(123581347));
-
             Backend = new LED_Strahler_Backend(this);
         }
+
         #endregion
+    }
+
+    public class DoubleToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return value.ToString();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return 0.0;
+        }
     }
 }

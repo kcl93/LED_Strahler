@@ -39,7 +39,7 @@
             <wpfTool:ColorPicker Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Name="RGBColorPicker" UsingAlphaChannel="False" DisplayColorAndName="True" ShowRecentColors="True" SelectedColor="{Binding ColorPickerColor}"/>
             <Label Grid.Row="1" Grid.Column="0" Content="Hue"/>
             <wpfTool:RangeSlider Grid.Row="2" Grid.Column="0" Name="HueSlider" Minimum="0" Maximum="65535" LowerValue="{Binding HueMinValue}" HigherValue="{Binding HueMaxValue}"/>
-            <RadioButton Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="RB_Hue" GroupName="TargetGroup" IsChecked="True"/>
+            <RadioButton Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="RB_Hue" GroupName="TargetGroup"/>
             <Label Grid.Row="3" Grid.Column="0" Content="Saturation"/>
             <wpfTool:RangeSlider Grid.Row="4" Grid.Column="0" Name="SaturationSlider" Minimum="0" Maximum="65535" LowerValue="{Binding SaturationMinValue}" HigherValue="{Binding SaturationMaxValue}"/>
             <RadioButton Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Name="RB_Saturation" GroupName="TargetGroup"/>
@@ -50,11 +50,11 @@
             <Slider Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Name="PeriodSlider" Maximum="65535" SmallChange="1" Value="{Binding PeriodValue}"/>
             <Label Grid.Row="9" Grid.Column="0" Content="Number of strobe pulses"/>
             <Slider Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" Name="StrobeCountSlider" Maximum="65535" SmallChange="1" Value="{Binding StrobeCountValue}"/>
-            <Button Grid.Row="11" Grid.Column="0" Name="SetButton" Content="Set" Height="24px" Margin="5px" Width="100px"/>
-            <RadioButton Grid.Row="11" Grid.Column="1" VerticalAlignment="Center" Name="RB_SetButton" GroupName="LiveControlGroup" IsChecked="True"/>
-            <Button Grid.Row="12" Grid.Column="0" Name="FadeButton" Content="Fade" Height="24px" Margin="5px" Width="100px"/>
+            <Button Grid.Row="11" Grid.Column="0" Name="SetButton" Content="Set" Height="24px" Margin="5px" Width="100px" Click="SetButtonClick" IsEnabled="{Binding EnableButtons}"/>
+            <RadioButton Grid.Row="11" Grid.Column="1" VerticalAlignment="Center" Name="RB_SetButton" GroupName="LiveControlGroup"/>
+            <Button Grid.Row="12" Grid.Column="0" Name="FadeButton" Content="Fade" Height="24px" Margin="5px" Width="100px" Click="FadeButtonClick" IsEnabled="{Binding EnableButtons}"/>
             <RadioButton Grid.Row="12" Grid.Column="1" VerticalAlignment="Center" Name="RB_FadeButton" GroupName="LiveControlGroup"/>
-            <Button Grid.Row="13" Grid.Column="0" Name="StrobeButton" Content="Strobe" Height="24px" Margin="5px" Width="100px"/>
+            <Button Grid.Row="13" Grid.Column="0" Name="StrobeButton" Content="Strobe" Height="24px" Margin="5px" Width="100px" Click="StrobeButtonClick" IsEnabled="{Binding EnableButtons}"/>
             <RadioButton Grid.Row="13" Grid.Column="1" VerticalAlignment="Center" Name="RB_StrobeButton" GroupName="LiveControlGroup"/>
             <Grid Grid.Row="14" Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>

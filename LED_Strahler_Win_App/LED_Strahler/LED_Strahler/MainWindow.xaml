@@ -7,6 +7,9 @@
         mc:Ignorable="d"
         Title="LED Strahler GUI" Height="700" Width="1200"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <Window.Resources>
+        <local:DoubleToStringConverter x:Key="DoubleToStringConverter"/>
+    </Window.Resources>
     <Grid Name="MainGrid">
         <TabControl>
             <TabItem Name="Control" Header="Control">
@@ -19,12 +22,12 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <local:LEDGroupControl Grid.Column="0" Group="Broadcast"/>
-                    <local:LEDGroupControl Grid.Column="1" Group="Group 1"/>
-                    <local:LEDGroupControl Grid.Column="2" Group="Group 2"/>
-                    <local:LEDGroupControl Grid.Column="3" Group="Group 3"/>
-                    <local:LEDGroupControl Grid.Column="4" Group="Group 4"/>
-                    <local:LEDGroupControl Grid.Column="5" Group="Group 5"/>
+                    <local:LEDGroupControl Grid.Column="0" x:Name="GroupControl0" GroupID="0"/>
+                    <local:LEDGroupControl Grid.Column="1" x:Name="GroupControl1" GroupID="1"/>
+                    <local:LEDGroupControl Grid.Column="2" x:Name="GroupControl2" GroupID="2"/>
+                    <local:LEDGroupControl Grid.Column="3" x:Name="GroupControl3" GroupID="3"/>
+                    <local:LEDGroupControl Grid.Column="4" x:Name="GroupControl4" GroupID="4"/>
+                    <local:LEDGroupControl Grid.Column="5" x:Name="GroupControl5" GroupID="5"/>
                 </Grid>
             </TabItem>
             <TabItem Name="Config" Header="Config">
@@ -46,7 +49,7 @@
                             <Label Grid.Row="0"  Content="Select COM port:" HorizontalContentAlignment="Center"/>
                             <ComboBox Grid.Row="1" ItemsSource="{Binding ComPortList}" Name="ComPort" Width="80px"/>
                             <Label Grid.Row="3"  Content="Refresh LED Strahler list:" HorizontalContentAlignment="Center"/>
-                            <Button Grid.Row="4" Content="Refresh" IsEnabled="{Binding RefreshEnabled}" Width="100px" Height="24px"/>
+                            <Button Grid.Row="4" Content="Refresh" Width="100px" Height="24px"/>
                         </Grid>
                     </GroupBox>
                     <GroupBox Grid.Column="1" Header="Group setup">
@@ -54,6 +57,7 @@
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Device ID" MinWidth="200" Binding="{Binding UUID}" IsReadOnly="True"/>
                                 <DataGridComboBoxColumn Header="Group" MinWidth="100" SelectedItemBinding="{Binding Group}" ItemsSource="{Binding AvailableGroups}"/>
+                                <DataGridTextColumn Header="Temperature" MinWidth="200" Binding="{Binding Temperature, Converter={StaticResource DoubleToStringConverter}}"/>
                                 <DataGridCheckBoxColumn Header="Test" Binding="{Binding TestState}"/>
                             </DataGrid.Columns>
                         </DataGrid>
