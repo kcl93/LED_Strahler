@@ -55,14 +55,14 @@ namespace LED_Strahler_GUI
         /// </summary>
         public Color ColorPickerColor
         {
-            get { return Color.FromRgb(RedValue, GreenValue, BlueValue); }
+            get { return Color.FromRgb(Convert.ToByte(RedValue / 257.0), Convert.ToByte(GreenValue / 257.0), Convert.ToByte(BlueValue / 257.0)); }
             set
             {
-                if((value.R != RedValue) || (value.G != GreenValue) || (value.B != BlueValue))
+                if((value.R != Convert.ToByte(RedValue / 257.0)) || (value.G != Convert.ToByte(GreenValue / 257.0)) || (value.B != Convert.ToByte(BlueValue / 257.0)))
                 {
-                    RedValue = value.R;
-                    GreenValue = value.G;
-                    BlueValue = value.B;
+                    RedValue = 257 * value.R;
+                    GreenValue = 257 * value.G;
+                    BlueValue = 257 * value.B;
                     NotifyPropertyChanged();
                     UpdateHsvFromRgb();
                 }
@@ -72,8 +72,8 @@ namespace LED_Strahler_GUI
         /// <summary>
         /// Red color value
         /// </summary>
-        private byte _RedValue = 0;
-        public byte RedValue
+        private ushort _RedValue = 0;
+        public ushort RedValue
         {
             get { return _RedValue; }
             set
@@ -90,8 +90,8 @@ namespace LED_Strahler_GUI
         /// <summary>
         /// Green color value
         /// </summary>
-        private byte _GreenValue = 0;
-        public byte GreenValue
+        private ushort _GreenValue = 0;
+        public ushort GreenValue
         {
             get { return _GreenValue; }
             set
@@ -108,8 +108,8 @@ namespace LED_Strahler_GUI
         /// <summary>
         /// Blue color value
         /// </summary>
-        private byte _BlueValue = 0;
-        public byte BlueValue
+        private ushort _BlueValue = 0;
+        public ushort BlueValue
         {
             get { return _BlueValue; }
             set
@@ -303,12 +303,16 @@ namespace LED_Strahler_GUI
 
         private void UpdateHsvFromRgb()
         {
-            Rgb rgb = new Rgb() { R = this.RedValue, G = this.GreenValue, B = this.BlueValue };
+            Rgb rgb = new Rgb() {
+                R = ((double)this.RedValue / 257.0),
+                G = ((double)this.GreenValue / 257.0),
+                B = ((double)this.BlueValue / 257.0)
+            };
             Hsv hsv = rgb.To<Hsv>();
 
-            if (this.HueMaxValue != (ushort)hsv.H)
+            if (this.HueMaxValue != Convert.ToUInt16(hsv.H * 65536.0 / 360.0))
             {
-                this._HueMaxValue = (ushort)(100.0 * hsv.H);
+                this._HueMaxValue = Convert.ToUInt16(hsv.H * 65536.0 / 360.0);
                 if(this.HueMinValue > this._HueMaxValue)
                 {
                     this._HueMinValue = this._HueMaxValue;
@@ -317,9 +321,9 @@ namespace LED_Strahler_GUI
                 this.NotifyPropertyChanged("HueMaxValue");
             }
 
-            if (this.SaturationMaxValue != (ushort)(10000.0 * hsv.S))
+            if (this.SaturationMaxValue != Convert.ToUInt16(hsv.S * 65535.0))
             {
-                this._SaturationMaxValue = (ushort)(10000.0 * hsv.S);
+                this._SaturationMaxValue = Convert.ToUInt16(hsv.S * 65535.0);
                 if (this.SaturationMinValue > this._SaturationMaxValue)
                 {
                     this._SaturationMinValue = this._SaturationMaxValue;
@@ -328,9 +332,9 @@ namespace LED_Strahler_GUI
                 this.NotifyPropertyChanged("SaturationMaxValue");
             }
 
-            if (this.ValueMaxValue != (ushort)(10000.0 * hsv.V))
+            if (this.ValueMaxValue != Convert.ToUInt16(hsv.V * 65535.0))
             {
-                this._ValueMaxValue = (ushort)(10000.0 * hsv.V);
+                this._ValueMaxValue = Convert.ToUInt16(hsv.V * 65535.0);
                 if (this.ValueMinValue > this._ValueMaxValue)
                 {
                     this._ValueMinValue = this._ValueMaxValue;
@@ -344,24 +348,28 @@ namespace LED_Strahler_GUI
 
         private void UpdateRgbFromHsv()
         {
-            Hsv hsv = new Hsv() { H = (double)this.HueMaxValue / 100.0, S = (double)this.SaturationMaxValue / 10000.0, V = (double)this.ValueMaxValue / 10000.0 };
+            Hsv hsv = new Hsv() {
+                H = ((double)this.HueMaxValue * 360.0 / 65536.0),
+                S = ((double)this.SaturationMaxValue / 65535.0),
+                V = ((double)this.ValueMaxValue / 65535.0)
+            };
             Rgb rgb = hsv.To<Rgb>();
 
-            if (this.RedValue != (byte)rgb.R)
+            if (this.RedValue != Convert.ToUInt16(rgb.R * 257.0))
             {
-                this._RedValue = (byte)rgb.R;
+                this._RedValue = Convert.ToUInt16(rgb.R * 257.0);
                 this.NotifyPropertyChanged("RedValue");
             }
 
-            if (this.GreenValue != (byte)rgb.G)
+            if (this.GreenValue != Convert.ToUInt16(rgb.G * 257.0))
             {
-                this._GreenValue = (byte)rgb.G;
+                this._GreenValue = Convert.ToUInt16(rgb.G * 257.0);
                 this.NotifyPropertyChanged("GreenValue");
             }
 
-            if (this.BlueValue != (byte)rgb.B)
+            if (this.BlueValue != Convert.ToUInt16(rgb.B * 257.0))
             {
-                this._BlueValue = (byte)rgb.B;
+                this._BlueValue = Convert.ToUInt16(rgb.B * 257.0);
                 this.NotifyPropertyChanged("BlueValue");
             }
 
