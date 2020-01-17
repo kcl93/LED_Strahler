@@ -32,3 +32,37 @@ U:\Eigene Dokumente\Windows Programme\LED_Strahler\LED_Strahler\obj\Debug\LEDGro
 U:\Eigene Dokumente\Windows Programme\LED_Strahler\LED_Strahler\obj\Debug\LED_Strahler_GUI.csproj.CopyComplete
 U:\Eigene Dokumente\Windows Programme\LED_Strahler\LED_Strahler\obj\Debug\GeneratedInternalTypeHelper.g.cs
 U:\Eigene Dokumente\Windows Programme\LED_Strahler\LED_Strahler\bin\Debug\ColorMine.dll
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\bin\Debug\LED_Strahler.exe.config
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\bin\Debug\LED_Strahler.exe
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\bin\Debug\LED_Strahler.pdb
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\bin\Debug\ColorMine.dll
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\bin\Debug\Xceed.Wpf.AvalonDock.dll
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\bin\Debug\Xceed.Wpf.AvalonDock.Themes.Aero.dll
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\bin\Debug\Xceed.Wpf.AvalonDock.Themes.Metro.dll
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\bin\Debug\Xceed.Wpf.AvalonDock.Themes.VS2010.dll
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\bin\Debug\Xceed.Wpf.Toolkit.dll
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\bin\Debug\de\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\bin\Debug\es\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\bin\Debug\fr\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\bin\Debug\hu\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\bin\Debug\it\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\bin\Debug\pt-BR\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\bin\Debug\ro\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\bin\Debug\ru\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\bin\Debug\sv\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\bin\Debug\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\obj\Debug\LED_Strahler_GUI.csprojAssemblyReference.cache
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\obj\Debug\LEDGroupControl.g.cs
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\obj\Debug\MainWindow.g.cs
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\obj\Debug\App.g.cs
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\obj\Debug\LED_Strahler_MarkupCompile.cache
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\obj\Debug\LED_Strahler_MarkupCompile.lref
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\obj\Debug\LEDGroupControl.baml
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\obj\Debug\MainWindow.baml
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\obj\Debug\LED_Strahler.g.resources
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\obj\Debug\LED_Strahler.Properties.Resources.resources
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\obj\Debug\LED_Strahler_GUI.csproj.GenerateResource.cache
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\obj\Debug\LED_Strahler_GUI.csproj.CopyComplete
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\obj\Debug\LED_Strahler.exe
+C:\Users\klb5kor\Documents\Github\LED_Strahler\LED_Strahler_Win_App\LED_Strahler\LED_Strahler\obj\Debug\LED_Strahler.pdb

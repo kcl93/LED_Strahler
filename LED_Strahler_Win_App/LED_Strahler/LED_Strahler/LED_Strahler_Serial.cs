@@ -47,6 +47,8 @@ namespace LED_Strahler_GUI
             {
                 if ((this.Serial != null) && (this.Serial.IsOpen == true))
                 {
+                    //Flush input buffer
+                    Serial.DiscardInBuffer();
                     //Send data
                     var Data = Encoding.ASCII.GetBytes(Text + "\n");
                     Serial.Write(Data, 0, Data.Length);
@@ -180,20 +182,17 @@ namespace LED_Strahler_GUI
             this.Write("G" + (int)Commands.FadeValue + " " + GroupID + " " + Period + " " + Hue + " " + Saturation + " " + ValueMin + " " + ValueMax);
         }
 
-        public void GetTemperature(List<LED_Strahler> StrahlerList)
+        public void GetTemperature(LED_Strahler Strahler)
         {
-            foreach (LED_Strahler Strahler in StrahlerList)
-            {
-                string Ret = this.WriteRead("G" + (int)Commands.GetTemperature + " " + Strahler.UUID, 100);
+            string Ret = this.WriteRead("G" + (int)Commands.GetTemperature + " " + Strahler.UUID, 100);
 
-                if ((Ret.Length >= 6) && (Ret.StartsWith("T: ") == true) && (double.TryParse(Ret.Substring(3), out double Temp) == true))
-                {
-                    Strahler.Temperature = Temp;
-                }
-                else
-                {
-                    Strahler.Temperature = 0.0;
-                }
+            if ((Ret.Length >= 6) && (Ret.StartsWith("T: ") == true) && (double.TryParse(Ret.Substring(3), out double Temp) == true))
+            {
+                Strahler.Temperature = Temp;
+            }
+            else
+            {
+                Strahler.Temperature = 0.0;
             }
         }
 

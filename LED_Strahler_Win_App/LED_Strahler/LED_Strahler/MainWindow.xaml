@@ -44,21 +44,26 @@
                                 <RowDefinition Height="20px"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="50px"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
                             <Label Grid.Row="0"  Content="Select COM port:" HorizontalContentAlignment="Center"/>
                             <ComboBox Grid.Row="1" ItemsSource="{Binding ComPortList}" Name="ComPort" Width="80px"/>
-                            <Label Grid.Row="3"  Content="Refresh LED Strahler list:" HorizontalContentAlignment="Center"/>
-                            <Button Grid.Row="4" Content="Refresh" Width="100px" Height="24px"/>
+                            <Label Grid.Row="3"  Content="Connect to LED base and/or refresh device list:" HorizontalContentAlignment="Center"/>
+                            <Button Grid.Row="4" Name="ConnectRefreshButton" Content="Connect &amp; Refresh" Width="130px" Height="24px"/>
+                            <Label Grid.Row="6"  Content="Read temperatures from all devices:" HorizontalContentAlignment="Center"/>
+                            <Button Grid.Row="7" Name="GetTemperatureButton" Content="Get temperature" Width="130px" Height="24px"/>
                         </Grid>
                     </GroupBox>
                     <GroupBox Grid.Column="1" Header="Group setup">
-                        <DataGrid Width="400" HorizontalAlignment="Left" Name="DeviceGrid" ItemsSource="{Binding DeviceList}" AutoGenerateColumns="False" CanUserResizeColumns="False" VerticalScrollBarVisibility="Auto" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" SelectionUnit="Cell">
+                        <DataGrid Width="500" HorizontalAlignment="Left" Name="DeviceGrid" ItemsSource="{Binding DeviceList}" AutoGenerateColumns="False" CanUserResizeColumns="False" VerticalScrollBarVisibility="Auto" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" SelectionUnit="Cell">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Device ID" MinWidth="200" Binding="{Binding UUID}" IsReadOnly="True"/>
-                                <DataGridComboBoxColumn Header="Group" MinWidth="100" SelectedItemBinding="{Binding Group}" ItemsSource="{Binding AvailableGroups}"/>
-                                <DataGridTextColumn Header="Temperature" MinWidth="200" Binding="{Binding Temperature, Converter={StaticResource DoubleToStringConverter}}"/>
-                                <DataGridCheckBoxColumn Header="Test" Binding="{Binding TestState}"/>
+                                <DataGridTextColumn Header="Device ID" Width="150" Binding="{Binding UUID}" IsReadOnly="True"/>
+                                <DataGridComboBoxColumn Header="Group" Width="100" SelectedItemBinding="{Binding Group}" ItemsSource="{Binding AvailableGroups}"/>
+                                <DataGridTextColumn Header="Temperature" Width="150" Binding="{Binding Temperature, Converter={StaticResource DoubleToStringConverter}}"/>
+                                <DataGridCheckBoxColumn Header="Test" Width="*" Binding="{Binding TestState}"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </GroupBox>

@@ -345,6 +345,14 @@ namespace LED_Strahler_GUI
 
         #region Helper methods
 
+        public void DoLiveControlUpdate()
+        {
+            if(LiveControl == true)
+            {
+                
+            }
+        }
+
         public void SetButtonClick(object sender, RoutedEventArgs e)
         {
             Serial.SetRGB(this.GroupID, this.RedValue, this.GreenValue, this.BlueValue);
@@ -414,6 +422,7 @@ namespace LED_Strahler_GUI
             }
 
             this.NotifyPropertyChanged("ColorPickerColor");
+            DoLiveControlUpdate();
         }
 
         private void UpdateRgbFromHsv()
@@ -444,6 +453,7 @@ namespace LED_Strahler_GUI
             }
 
             this.NotifyPropertyChanged("ColorPickerColor");
+            DoLiveControlUpdate();
         }
 
         #endregion
