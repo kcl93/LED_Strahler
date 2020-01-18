@@ -1,17 +1,16 @@
-USART_Handler.h:46:15:void USART_Handler::Println(const char*)	16	static
-LED_StateMachine.cpp:56:6:void LED_StateMachine_Init()	24	static
-LED_StateMachine.cpp:70:6:void LED_StateMachine_Handle()	8	static,ignoring_inline_asm
-LED_StateMachine.cpp:182:6:void LED_CopyRGB(uint16_t, uint16_t, uint16_t)	24	static
-LED_StateMachine.cpp:207:13:void LED_CopyRGW(uint16_t, uint16_t, uint16_t, uint16_t)	24	static
-LED_StateMachine.cpp:223:13:void LED_CopyHSV(uint16_t, uint16_t, uint16_t)	24	static
-LED_StateMachine.cpp:232:6:void LED_UpdateTimebase(uint32_t)	24	static
-LED_StateMachine.cpp:241:6:void LED_SetModeRGB(uint16_t, uint16_t, uint16_t)	24	static
-LED_StateMachine.cpp:250:6:void LED_SetModeRGBW(uint16_t, uint16_t, uint16_t, uint16_t)	24	static
-LED_StateMachine.cpp:259:6:void LED_SetModeHSV(uint16_t, uint16_t, uint16_t)	24	static
-LED_StateMachine.cpp:270:6:void LED_SetModeStrobeRGB(uint8_t, uint8_t, uint16_t, uint16_t, uint16_t)	24	static
-LED_StateMachine.cpp:285:6:void LED_SetModeStrobeRGBW(uint8_t, uint8_t, uint16_t, uint16_t, uint16_t, uint16_t)	24	static
-LED_StateMachine.cpp:300:6:void LED_SetModeStrobeHSV(uint8_t, uint8_t, uint16_t, uint16_t, uint16_t)	24	static
-LED_StateMachine.cpp:317:6:void LED_SetModeFadeHue(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)	24	static
-LED_StateMachine.cpp:330:6:void LED_SetModeFadeSaturation(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)	24	static
-LED_StateMachine.cpp:343:6:void LED_SetModeFadeValue(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)	24	static
-LED_StateMachine.cpp:356:6:void SetHSV(uint16_t, uint16_t, uint16_t)	32	static
+LED_StateMachine.cpp:57:6:void LED_StateMachine_Init()	16	static
+LED_StateMachine.cpp:69:6:void LED_StateMachine_Handle()	16	static,ignoring_inline_asm
+LED_StateMachine.cpp:214:6:void LED_CopyRGB(uint16_t, uint16_t, uint16_t)	24	static
+LED_StateMachine.cpp:239:13:void LED_CopyRGBW(uint16_t, uint16_t, uint16_t, uint16_t)	24	static
+LED_StateMachine.cpp:255:13:void LED_CopyHSV(uint16_t, uint16_t, uint16_t)	24	static
+LED_StateMachine.cpp:264:6:void LED_UpdateTimebase(uint32_t)	24	static
+LED_StateMachine.cpp:273:6:void LED_SetModeRGB(uint16_t, uint16_t, uint16_t)	24	static
+LED_StateMachine.cpp:282:6:void LED_SetModeRGBW(uint16_t, uint16_t, uint16_t, uint16_t)	24	static
+LED_StateMachine.cpp:291:6:void LED_SetModeHSV(uint16_t, uint16_t, uint16_t)	24	static
+LED_StateMachine.cpp:302:6:void LED_SetModeStrobeRGB(uint8_t, uint8_t, uint16_t, uint16_t, uint16_t)	24	static
+LED_StateMachine.cpp:318:6:void LED_SetModeStrobeRGBW(uint8_t, uint8_t, uint16_t, uint16_t, uint16_t, uint16_t)	24	static
+LED_StateMachine.cpp:334:6:void LED_SetModeStrobeHSV(uint8_t, uint8_t, uint16_t, uint16_t, uint16_t)	24	static
+LED_StateMachine.cpp:352:6:void LED_SetModeFadeHue(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)	24	static
+LED_StateMachine.cpp:366:6:void LED_SetModeFadeSaturation(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)	24	static
+LED_StateMachine.cpp:380:6:void LED_SetModeFadeValue(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)	24	static
+LED_StateMachine.cpp:394:6:void SetHSV(uint16_t, uint16_t, uint16_t)	32	static

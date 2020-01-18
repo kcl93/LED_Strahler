@@ -18,8 +18,8 @@ stm32_nrf24l01.c:275:9:NRF24L01_RxFifoEmpty	24	static
 stm32_nrf24l01.c:280:9:NRF24L01_GetStatus	24	static
 stm32_nrf24l01.c:292:28:NRF24L01_GetTransmissionStatus	24	static
 stm32_nrf24l01.c:306:6:NRF24L01_SoftwareReset	16	static
-stm32_nrf24l01.c:360:9:NRF24L01_GetRetransmissionsCount	8	static
-stm32_nrf24l01.c:365:6:NRF24L01_SetChannel	16	static
-stm32_nrf24l01.c:374:6:NRF24L01_SetRF	24	static
-stm32_nrf24l01.c:397:9:NRF24L01_Read_Interrupts	16	static
-stm32_nrf24l01.c:402:9:NRF24L01_Clear_Interrupts	8	static
+stm32_nrf24l01.c:370:9:NRF24L01_GetRetransmissionsCount	8	static
+stm32_nrf24l01.c:375:6:NRF24L01_SetChannel	16	static
+stm32_nrf24l01.c:384:6:NRF24L01_SetRF	24	static
+stm32_nrf24l01.c:407:9:NRF24L01_Read_Interrupts	16	static
+stm32_nrf24l01.c:412:9:NRF24L01_Clear_Interrupts	8	static

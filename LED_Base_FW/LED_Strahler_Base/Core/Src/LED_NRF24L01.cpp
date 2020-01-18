@@ -77,6 +77,11 @@ void LED_NRF24L01_IRQ(void)
 		/* Get data from NRF24L01+ */
 		NRF24L01_GetData(packet.Data);
 	}
+	if(status & (1 << NRF24L01_TX_DS))
+	{
+		//Reset LED as data was sent
+		HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
+	}
 }
 
 
@@ -102,6 +107,8 @@ void LED_NRF24L01_Send(uint8_t* data)
 {
 	//Wait for previous transfer to finish or timeout
 	LED_NRF24L01_WaitTx(5);
+	//Set LED that new data will be sent
+	HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
 	//Send new data
 	NRF24L01_Transmit(data);
 }

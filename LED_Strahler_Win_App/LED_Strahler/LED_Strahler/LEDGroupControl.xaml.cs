@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Xceed.Wpf.Toolkit;
+using System.Windows.Threading;
 using ColorMine.ColorSpaces;
 
 namespace LED_Strahler_GUI
@@ -79,7 +80,7 @@ namespace LED_Strahler_GUI
         /// <summary>
         /// Red color value
         /// </summary>
-        private ushort _RedValue = 0;
+        private ushort _RedValue = 65535;
         public ushort RedValue
         {
             get { return _RedValue; }
@@ -197,7 +198,7 @@ namespace LED_Strahler_GUI
         /// <summary>
         /// Saturation max slider value
         /// </summary>
-        private ushort _SaturationMaxValue = 0;
+        private ushort _SaturationMaxValue = 65535;
         public ushort SaturationMaxValue
         {
             get { return _SaturationMaxValue; }
@@ -240,7 +241,7 @@ namespace LED_Strahler_GUI
         /// <summary>
         /// Value max slider value
         /// </summary>
-        private ushort _ValueMaxValue = 0;
+        private ushort _ValueMaxValue = 65535;
         public ushort ValueMaxValue
         {
             get { return _ValueMaxValue; }
@@ -260,9 +261,19 @@ namespace LED_Strahler_GUI
         }
 
         /// <summary>
+        /// Global brightness slider value
+        /// </summary>
+        private ushort _BrightnessValue = 10000;
+        public ushort BrightnessValue
+        {
+            get { return _BrightnessValue; }
+            set { _BrightnessValue = value; NotifyPropertyChanged(); DoLiveControlUpdate(); }
+        }
+
+        /// <summary>
         /// Period slider value for strobes and fading
         /// </summary>
-        private ushort _PeriodValue = 0;
+        private ushort _PeriodValue = 32768;
         public ushort PeriodValue
         {
             get { return _PeriodValue; }
@@ -272,7 +283,7 @@ namespace LED_Strahler_GUI
         /// <summary>
         /// Strobe count slider value
         /// </summary>
-        private ushort _StrobeCountValue = 0;
+        private ushort _StrobeCountValue = 10000;
         public ushort StrobeCountValue
         {
             get { return _StrobeCountValue; }
@@ -290,7 +301,7 @@ namespace LED_Strahler_GUI
             {
                 _LiveControl = value;
                 NotifyPropertyChanged();
-                if(_LiveControl || _MusicControl)
+                if(_LiveControl || _MusicControl || _CandleMode)
                 {
                     EnableButtons = false;
                 }
@@ -312,7 +323,29 @@ namespace LED_Strahler_GUI
             {
                 _MusicControl = value;
                 NotifyPropertyChanged();
-                if (_LiveControl || _MusicControl)
+                if (_LiveControl || _MusicControl || _CandleMode)
+                {
+                    EnableButtons = false;
+                }
+                else
+                {
+                    EnableButtons = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Candle mode checkbox value
+        /// </summary>
+        private bool _CandleMode = false;
+        public bool CandleMode
+        {
+            get { return _CandleMode; }
+            set
+            {
+                _CandleMode = value;
+                NotifyPropertyChanged();
+                if (_LiveControl || _MusicControl || _CandleMode)
                 {
                     EnableButtons = false;
                 }
@@ -338,9 +371,6 @@ namespace LED_Strahler_GUI
         public LEDGroupControl()
         {
             InitializeComponent();
-
-            this.RB_Hue.IsChecked = true;
-            this.RB_SetButton.IsChecked = true;
         }
 
         #region Helper methods
@@ -349,33 +379,60 @@ namespace LED_Strahler_GUI
         {
             if(LiveControl == true)
             {
-                
+                if(this.RB_SetButton.IsChecked == true)
+                {
+                    SetButtonClick(null, null);
+                }
+                else if(this.RB_FadeButton.IsChecked == true)
+                {
+                    FadeButtonClick(null, null);
+                }
+                else if (this.RB_StrobeButton.IsChecked == true)
+                {
+                    StrobeButtonClick(null, null);
+                }
             }
         }
 
         public void SetButtonClick(object sender, RoutedEventArgs e)
         {
-            Serial.SetRGB(this.GroupID, this.RedValue, this.GreenValue, this.BlueValue);
+            double BrightnessScaling = Math.Pow((double)this.BrightnessValue, 2) / Math.Pow(65535, 2);
+            ushort Red = Convert.ToUInt16((double)this.RedValue * BrightnessScaling);
+            ushort Green = Convert.ToUInt16((double)this.GreenValue * BrightnessScaling);
+            ushort Blue = Convert.ToUInt16((double)this.BlueValue * BrightnessScaling);
+            Serial.SetRGB(this.GroupID, Red, Green, Blue);
         }
 
         public void StrobeButtonClick(object sender, RoutedEventArgs e)
         {
-            Serial.StrobeRGB(this.GroupID, this.PeriodValue, this.StrobeCountValue, this.RedValue, this.GreenValue, this.BlueValue);
+            double BrightnessScaling = Math.Pow((double)this.BrightnessValue, 2) / Math.Pow(65535, 2);
+            ushort Red = Convert.ToUInt16((double)this.RedValue * BrightnessScaling);
+            ushort Green = Convert.ToUInt16((double)this.GreenValue * BrightnessScaling);
+            ushort Blue = Convert.ToUInt16((double)this.BlueValue * BrightnessScaling);
+            byte Period = Convert.ToByte(Math.Pow((double)this.PeriodValue/257, 2) / 255);
+            byte StrobeCount = Convert.ToByte(Math.Pow((double)this.StrobeCountValue / 257, 1.5) / Math.Pow(255, 0.5));
+            Serial.StrobeRGB(this.GroupID, Period, StrobeCount, Red, Green, Blue);
         }
 
         public void FadeButtonClick(object sender, RoutedEventArgs e)
         {
-            if(this.RB_Hue.IsChecked == true)
+            double BrightnessScaling = Math.Pow((double)this.BrightnessValue, 2) / Math.Pow(65535, 2);
+            ushort Period = Convert.ToUInt16(Math.Pow((double)this.PeriodValue, 2) / 65535);
+            if (this.RB_Hue.IsChecked == true)
             {
-                Serial.FadeHue(this.GroupID, this.PeriodValue, this.HueMinValue, this.HueMaxValue, this.SaturationMaxValue, this.ValueMaxValue);
+                ushort Value = Convert.ToUInt16((double)this.ValueMaxValue * BrightnessScaling);
+                Serial.FadeHue(this.GroupID, Period, this.HueMinValue, this.HueMaxValue, this.SaturationMaxValue, Value);
             }
             else if (this.RB_Saturation.IsChecked == true)
             {
-                Serial.FadeSaturation(this.GroupID, this.PeriodValue, this.HueMaxValue, this.SaturationMinValue, this.SaturationMaxValue, this.ValueMaxValue);
+                ushort Value = Convert.ToUInt16((double)this.ValueMaxValue * BrightnessScaling);
+                Serial.FadeSaturation(this.GroupID, Period, this.HueMaxValue, this.SaturationMinValue, this.SaturationMaxValue, Value);
             }
             else if (this.RB_Value.IsChecked == true)
             {
-                Serial.FadeValue(this.GroupID, this.PeriodValue, this.HueMaxValue, this.SaturationMaxValue, this.ValueMinValue, this.ValueMaxValue);
+                ushort ValueMax = Convert.ToUInt16((double)this.ValueMaxValue * BrightnessScaling);
+                ushort ValueMin = Convert.ToUInt16((double)this.ValueMinValue * BrightnessScaling);
+                Serial.FadeValue(this.GroupID, Period, this.HueMaxValue, this.SaturationMaxValue, ValueMin, ValueMax);
             }
         }
 

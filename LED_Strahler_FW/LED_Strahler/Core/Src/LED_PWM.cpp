@@ -6,6 +6,7 @@
  */
 
 #include "LED_PWM.h"
+#include "LED_Statemachine.h"
 
 
 #define LED_R_CH_SLOW	TIM_CHANNEL_3
@@ -64,10 +65,17 @@ void LED_PWM_SetRGBW(uint16_t red, uint16_t green, uint16_t blue, uint16_t white
 	_led_green = green;
 	_led_blue = blue;
 	_led_white = white;
-	LED_PWM_SetPWM_TIM(LED_R_CH_SLOW, LED_R_CH_FAST, red);
-	LED_PWM_SetPWM_TIM(LED_G_CH_SLOW, LED_G_CH_FAST, green);
-	LED_PWM_SetPWM_TIM(LED_B_CH_SLOW, LED_B_CH_FAST, blue);
-	LED_PWM_SetPWM_TIM(LED_W_CH_SLOW, LED_W_CH_FAST, white);
+
+	#if RGBW_LED
+		LED_PWM_SetPWM_TIM(LED_R_CH_SLOW, LED_R_CH_FAST, red);
+		LED_PWM_SetPWM_TIM(LED_G_CH_SLOW, LED_G_CH_FAST, green);
+		LED_PWM_SetPWM_TIM(LED_B_CH_SLOW, LED_B_CH_FAST, blue);
+		LED_PWM_SetPWM_TIM(LED_W_CH_SLOW, LED_W_CH_FAST, white);
+	#else
+		LED_PWM_SetPWM_TIM(LED_R_CH_SLOW, LED_R_CH_FAST, blue);
+		LED_PWM_SetPWM_TIM(LED_G_CH_SLOW, LED_G_CH_FAST, green);
+		LED_PWM_SetPWM_TIM(LED_B_CH_SLOW, LED_B_CH_FAST, red);
+	#endif
 }
 
 

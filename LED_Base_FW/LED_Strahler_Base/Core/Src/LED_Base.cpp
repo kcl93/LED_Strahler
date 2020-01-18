@@ -76,7 +76,6 @@ void LED_Base_Handle(void)
 		}
 		return;
 	}
-	return;
 
 	//Execute new command
 	switch(cmd.CMD)
@@ -105,8 +104,8 @@ inline void ExecPingRequest(NRF24L01_DataPacket *cmd)
 	cmd->CMD = CMD_PINGREQUEST;
 	LED_NRF24L01_Send(cmd->Data); //Ping all slaves to see which are present
 
-	//Wait for transfer to finish
-	while(NRF24L01_GetTransmissionStatus() == NRF24L01_Transmit_Status_Sending);
+	//Wait for transfer to finish or timeout
+	LED_NRF24L01_WaitTx(5);
 
 	/* Go to RX mode */
 	NRF24L01_PowerUpRx();
@@ -143,8 +142,8 @@ inline void ExecGetTemperature(NRF24L01_DataPacket *cmd)
 	cmd->CMD = CMD_GETTEMPERATURE;
 	LED_NRF24L01_Send(cmd->Data); //Ask for temperature
 
-	//Wait for transfer to finish
-	while(NRF24L01_GetTransmissionStatus() == NRF24L01_Transmit_Status_Sending);
+	//Wait for transfer to finish or timeout
+	LED_NRF24L01_WaitTx(5);
 
 	/* Go to RX mode */
 	NRF24L01_PowerUpRx();

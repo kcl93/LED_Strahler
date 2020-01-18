@@ -19,7 +19,7 @@
 #define BT_UART_HANDLE			huart2
 #define PC_UART_HANDLE			huart3
 
-#define TIMEBASE_SYNC_PERIOD	1000	//Oscillators should have an error of ~+-1ms each 20s
+#define TIMEBASE_SYNC_PERIOD	5000	//Oscillators should have an error of ~+-1ms each 20s
 #define PING_TIMEOUT			1100	//Theoretically all should answer within 4*256=1024ms
 #define GET_INFO_TIMEOUT		20		//Slaves should answer within 20ms
 

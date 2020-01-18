@@ -31,7 +31,7 @@ Core/Src/LED_PWM.o: ../Core/Src/LED_PWM.cpp ../Core/Inc/LED_PWM.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_tim_ex.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h \
- ../Core/Inc/main.h
+ ../Core/Inc/main.h ../Core/Inc/LED_Statemachine.h
 
 ../Core/Inc/LED_PWM.h:
 
@@ -100,3 +100,5 @@ Core/Src/LED_PWM.o: ../Core/Src/LED_PWM.cpp ../Core/Inc/LED_PWM.h \
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h:
 
 ../Core/Inc/main.h:
+
+../Core/Inc/LED_Statemachine.h:

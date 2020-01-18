@@ -20,7 +20,7 @@
 
 
 void LED_CopyRGB(uint16_t red, uint16_t green, uint16_t blue);
-void LED_CopyRGW(uint16_t red, uint16_t green, uint16_t blue, uint16_t white);
+void LED_CopyRGBW(uint16_t red, uint16_t green, uint16_t blue, uint16_t white);
 void LED_CopyHSV(uint16_t hue, uint16_t saturation, uint16_t value);
 void SetHSV(uint16_t H, uint16_t S, uint16_t V);
 
@@ -48,6 +48,7 @@ uint8_t Strobe_State = 0;
 uint8_t Strobe_Count = 0;
 uint16_t Fade_Period = 0;
 uint16_t Fade_State = 0;
+bool FadeUp = true;
 USART_Handler *Serial = 0;
 char buf[32];
 
@@ -61,8 +62,6 @@ void LED_StateMachine_Init(void)
 	LED_PWM_Init();
 
 	LED_NRF24L01_Init(); //Setup RF-Interface
-
-	LED_SetModeFadeHue(1000, 65535, 0, 65535, 1000);
 }
 
 
@@ -104,24 +103,43 @@ void LED_StateMachine_Handle(void)
 				{
 					LED_PWM_SetRGBW(0, 0, 0, 0);
 				}
-				else if(Strobe_State >= Strobe_Period)
+				if(Strobe_State >= Strobe_Period)
 				{
 					Strobe_Count--;
 					Strobe_State = 0;
 					LED_StateMachine_Handle();
+				}
+				else
+				{
+					Strobe_State++;
 				}
 			}
 			break;
 
 		case LED_Mode_FadeHue:
 			LED_PWM_SetBoost(0); //Deactivate boost
-			LED_Hue = (uint16_t)((65535 * (uint32_t)Fade_State)/(uint32_t)Fade_Period) + LED_Fade_Max;
+			if((LED_Fade_Min == 0) && (LED_Fade_Max == 65535))
+			{
+				LED_Hue = (uint16_t)((65535 * (uint32_t)Fade_State)/(uint32_t)Fade_Period);
+			}
+			else
+			{
+				if(FadeUp == true)
+				{
+					LED_Hue = LED_Fade_Min + (uint16_t)(((uint32_t)(LED_Fade_Max - LED_Fade_Min) * (uint32_t)Fade_State)/(uint32_t)Fade_Period);
+				}
+				else
+				{
+					LED_Hue = LED_Fade_Max - (uint16_t)(((uint32_t)(LED_Fade_Max - LED_Fade_Min) * (uint32_t)Fade_State)/(uint32_t)Fade_Period);
+				}
+			}
 			SetHSV(LED_Hue, LED_Saturation, LED_Value); //Calculate RGB from HSV
 			LED_CopyRGB(LED_Red, LED_Green, LED_Blue); //Convert RGB to RGBW
 			LED_PWM_SetRGBW(LED_Red, LED_Green, LED_Blue, LED_White); //Calculate
 			if(Fade_State >= Fade_Period)
 			{
 				Fade_State = 0;
+				FadeUp = !FadeUp;
 			}
 			else
 			{
@@ -131,7 +149,14 @@ void LED_StateMachine_Handle(void)
 
 		case LED_Mode_FadeSaturation:
 			LED_PWM_SetBoost(0); //Deactivate boost
-			LED_Saturation = (uint16_t)(((uint32_t)(LED_Fade_Max - LED_Fade_Min) * (uint32_t)Fade_State)/(uint32_t)Fade_Period) + LED_Fade_Min;
+			if(FadeUp == true)
+			{
+				LED_Saturation = LED_Fade_Min + (uint16_t)(((uint32_t)(LED_Fade_Max - LED_Fade_Min) * (uint32_t)Fade_State)/(uint32_t)Fade_Period);
+			}
+			else
+			{
+				LED_Saturation = LED_Fade_Max - (uint16_t)(((uint32_t)(LED_Fade_Max - LED_Fade_Min) * (uint32_t)Fade_State)/(uint32_t)Fade_Period);
+			}
 			SetHSV(LED_Hue, LED_Saturation, LED_Value); //Calculate RGB from HSV
 			LED_CopyRGB(LED_Red, LED_Green, LED_Blue); //Convert RGB to RGBW
 			LED_PWM_SetRGBW(LED_Red, LED_Green, LED_Blue, LED_White); //Calculate
@@ -147,7 +172,14 @@ void LED_StateMachine_Handle(void)
 
 		case LED_Mode_FadeValue:
 			LED_PWM_SetBoost(0); //Deactivate boost
-			LED_Value = (uint16_t)(((uint32_t)(LED_Fade_Max - LED_Fade_Min) * (uint32_t)Fade_State)/(uint32_t)Fade_Period) + LED_Fade_Min;
+			if(FadeUp == true)
+			{
+				LED_Value = LED_Fade_Min + (uint16_t)(((uint32_t)(LED_Fade_Max - LED_Fade_Min) * (uint32_t)Fade_State)/(uint32_t)Fade_Period);
+			}
+			else
+			{
+				LED_Value = LED_Fade_Max - (uint16_t)(((uint32_t)(LED_Fade_Max - LED_Fade_Min) * (uint32_t)Fade_State)/(uint32_t)Fade_Period);
+			}
 			SetHSV(LED_Hue, LED_Saturation, LED_Value); //Calculate RGB from HSV
 			LED_CopyRGB(LED_Red, LED_Green, LED_Blue); //Convert RGB to RGBW
 			LED_PWM_SetRGBW(LED_Red, LED_Green, LED_Blue, LED_White); //Calculate
@@ -166,7 +198,7 @@ void LED_StateMachine_Handle(void)
 			break;
 
 		default: //Unknown state! disable lights and go to idle mode
-			LED_CopyRGW(0, 0, 0, 0);
+			LED_CopyRGBW(0, 0, 0, 0);
 			LED_PWM_SetRGBW(0, 0, 0, 0);
 			LED_mode = LED_Mode_Idle;
 			break;
@@ -204,7 +236,7 @@ void LED_CopyRGB(uint16_t red, uint16_t green, uint16_t blue)
 
 
 
-inline void LED_CopyRGW(uint16_t red, uint16_t green, uint16_t blue, uint16_t white)
+inline void LED_CopyRGBW(uint16_t red, uint16_t green, uint16_t blue, uint16_t white)
 {
 	#if defined(RGBW_LED)
 		LED_Red = red;
@@ -242,16 +274,16 @@ void LED_SetModeRGB(uint16_t red, uint16_t green, uint16_t blue)
 {
 	LED_CopyRGB(red, green, blue);
 	LED_mode = LED_Mode_Constant;
-	Serial->Println("Set RGB...");
+	//Serial->Println("Set RGB...");
 }
 
 
 
 void LED_SetModeRGBW(uint16_t red, uint16_t green, uint16_t blue, uint16_t white)
 {
-	LED_CopyRGW(red, green, blue, white);
+	LED_CopyRGBW(red, green, blue, white);
 	LED_mode = LED_Mode_Constant;
-	Serial->Println("Set RGBW...");
+	//Serial->Println("Set RGBW...");
 }
 
 
@@ -262,7 +294,7 @@ void LED_SetModeHSV(uint16_t hue, uint16_t saturation, uint16_t value)
 	SetHSV(LED_Hue, LED_Saturation, LED_Value);
 	LED_CopyRGB(LED_Red, LED_Green, LED_Blue); //Convert RGB to RGBW
 	LED_mode = LED_Mode_Constant;
-	Serial->Println("Set HSV...");
+	//Serial->Println("Set HSV...");
 }
 
 
@@ -274,10 +306,11 @@ void LED_SetModeStrobeRGB(uint8_t period, uint8_t count, uint16_t red, uint16_t 
 		period = 2*STROBE_ACTIVE_TICKS;
 	}
 	Strobe_Period = period;
+	Strobe_Count = count;
 	LED_CopyRGB(red, green, blue);
 	Strobe_State = 0;
 	LED_mode = LED_Mode_Strobe;
-	Serial->Println("Strobing RGB...");
+	//Serial->Println("Strobing RGB...");
 }
 
 
@@ -289,10 +322,11 @@ void LED_SetModeStrobeRGBW(uint8_t period, uint8_t count, uint16_t red, uint16_t
 		period = 2*STROBE_ACTIVE_TICKS;
 	}
 	Strobe_Period = period;
-	LED_CopyRGW(red, green, blue, white);
+	Strobe_Count = count;
+	LED_CopyRGBW(red, green, blue, white);
 	Strobe_State = 0;
 	LED_mode = LED_Mode_Strobe;
-	Serial->Println("Strobing RGBW...");
+	//Serial->Println("Strobing RGBW...");
 }
 
 
@@ -304,12 +338,13 @@ void LED_SetModeStrobeHSV(uint8_t period, uint8_t count, uint16_t hue, uint16_t 
 		period = 2*STROBE_ACTIVE_TICKS;
 	}
 	Strobe_Period = period;
+	Strobe_Count = count;
 	LED_CopyHSV(hue, saturation, value);
 	SetHSV(LED_Hue, LED_Saturation, LED_Value);
 	LED_CopyRGB(LED_Red, LED_Green, LED_Blue); //Convert RGB to RGBW
 	Strobe_State = 0;
 	LED_mode = LED_Mode_Strobe;
-	Serial->Println("Strobing HSV...");
+	//Serial->Println("Strobing HSV...");
 }
 
 
@@ -322,7 +357,8 @@ void LED_SetModeFadeHue(uint16_t period, uint16_t hue_max, uint16_t hue_min, uin
 	Fade_Period = period;
 	Fade_State = 0;
 	LED_mode = LED_Mode_FadeHue;
-	Serial->Println("Fading hue...");
+	FadeUp = true;
+	//Serial->Println("Fading hue...");
 }
 
 
@@ -335,7 +371,8 @@ void LED_SetModeFadeSaturation(uint16_t period, uint16_t hue, uint16_t saturatio
 	Fade_Period = period;
 	Fade_State = 0;
 	LED_mode = LED_Mode_FadeSaturation;
-	Serial->Println("Fading saturation...");
+	FadeUp = true;
+	//Serial->Println("Fading saturation...");
 }
 
 
@@ -348,7 +385,8 @@ void LED_SetModeFadeValue(uint16_t period, uint16_t hue, uint16_t saturation, ui
 	Fade_Period = period;
 	Fade_State = 0;
 	LED_mode = LED_Mode_FadeSaturation;
-	Serial->Println("Fading value...");
+	FadeUp = true;
+	//Serial->Println("Fading value...");
 }
 
 

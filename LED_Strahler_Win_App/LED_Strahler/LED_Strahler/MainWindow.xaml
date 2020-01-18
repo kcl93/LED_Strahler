@@ -58,7 +58,7 @@
                         </Grid>
                     </GroupBox>
                     <GroupBox Grid.Column="1" Header="Group setup">
-                        <DataGrid Width="500" HorizontalAlignment="Left" Name="DeviceGrid" ItemsSource="{Binding DeviceList}" AutoGenerateColumns="False" CanUserResizeColumns="False" VerticalScrollBarVisibility="Auto" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" SelectionUnit="Cell">
+                        <DataGrid Width="500" HorizontalAlignment="Left" Name="DeviceGrid" ItemsSource="{Binding DeviceList}" AutoGenerateColumns="False" CanUserResizeColumns="False" VerticalScrollBarVisibility="Auto" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" SelectionUnit="Cell" IsEnabled="False">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Device ID" Width="150" Binding="{Binding UUID}" IsReadOnly="True"/>
                                 <DataGridComboBoxColumn Header="Group" Width="100" SelectedItemBinding="{Binding Group}" ItemsSource="{Binding AvailableGroups}"/>

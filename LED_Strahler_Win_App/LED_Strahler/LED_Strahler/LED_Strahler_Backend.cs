@@ -51,19 +51,21 @@ namespace LED_Strahler_GUI
                 this.Serial.Open(this.GUI.ComPort.Text);
             }
 
-            //Ping for devices
-            this.Serial.PingRequest(out List<int> UUIDs);
+            ////Ping for devices
+            //this.Serial.PingRequest(out List<int> UUIDs);
 
-            //Setup new device list
-            List<LED_Strahler> DeviceList = new List<LED_Strahler>();
-            foreach (int UUID in UUIDs)
-            {
-                DeviceList.Add(new LED_Strahler(UUID));
-            }
-            this.GUI.DeviceList = DeviceList;
+            ////Setup new device list
+            //List<LED_Strahler> DeviceList = new List<LED_Strahler>();
+            //foreach (int UUID in UUIDs)
+            //{
+            //    DeviceList.Add(new LED_Strahler(UUID));
+            //}
+            //this.GUI.DeviceList = DeviceList;
 
-            //Refresh datagrid
-            this.GUI.DeviceGrid.Items.Refresh();
+            ////Refresh datagrid
+            //this.GUI.DeviceGrid.Items.Refresh();
+
+            this.GUI.DeviceGrid.IsEnabled = true;
         }
 
         public void GetTemperatureButtonClick(object sender, RoutedEventArgs e)
