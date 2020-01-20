@@ -3,14 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:xctk="http://schemas/xceed.com/wpf/xaml/toolkit"
              xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
-             xmlns:customName="wpfTool"
-             xmlns:local="clr-namespace:LED_Strahler_GUI"
              mc:Ignorable="d"
              FontSize="14px"
              d:DesignHeight="700" d:DesignWidth="195"
-             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+             DataContext="{Binding Backend, RelativeSource={RelativeSource Self}}">
     <GroupBox Header="{Binding Group}">
         <Grid>
             <Grid.RowDefinitions>
@@ -75,16 +72,16 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Button Grid.Row="0" Grid.Column="0" Name="SetButton" Content="Set" Height="24px" Margin="5px" Width="100px" Click="SetButtonClick" IsEnabled="{Binding EnableButtons}"/>
+                <Button Grid.Row="0" Grid.Column="0" Name="SetButton" Content="Set" Height="24px" Margin="5px" Width="100px" IsEnabled="{Binding EnableButtons}"/>
                 <RadioButton Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="RB_SetButton" IsChecked="True"/>
-                <Button Grid.Row="1" Grid.Column="0" Name="FadeButton" Content="Fade" Height="24px" Margin="5px" Width="100px" Click="FadeButtonClick" IsEnabled="{Binding EnableButtons}"/>
+                <Button Grid.Row="1" Grid.Column="0" Name="FadeButton" Content="Fade" Height="24px" Margin="5px" Width="100px" IsEnabled="{Binding EnableButtons}"/>
                 <RadioButton Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="RB_FadeButton"/>
-                <Button Grid.Row="2" Grid.Column="0" Name="StrobeButton" Content="Strobe" Height="24px" Margin="5px" Width="100px" Click="StrobeButtonClick" IsEnabled="{Binding EnableButtons}"/>
+                <Button Grid.Row="2" Grid.Column="0" Name="StrobeButton" Content="Strobe" Height="24px" Margin="5px" Width="100px" IsEnabled="{Binding EnableButtons}"/>
                 <RadioButton Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="RB_StrobeButton" />
             </Grid>
             <Grid Grid.Row="8">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="111px"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>

@@ -88,6 +88,7 @@
     <Compile Include="LEDGroupControl.xaml.cs">
       <DependentUpon>LEDGroupControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="LEDGroupControl_Backend.cs" />
     <Compile Include="LED_Strahler.cs" />
     <Compile Include="LED_Strahler_Backend.cs" />
     <Compile Include="Commands.cs" />

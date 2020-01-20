@@ -27,12 +27,12 @@ namespace LED_Strahler_GUI
             }
 
             //Connect serial port to all GroupControls
-            this.GUI.GroupControl0.Serial = this.Serial;
-            this.GUI.GroupControl1.Serial = this.Serial;
-            this.GUI.GroupControl2.Serial = this.Serial;
-            this.GUI.GroupControl3.Serial = this.Serial;
-            this.GUI.GroupControl4.Serial = this.Serial;
-            this.GUI.GroupControl5.Serial = this.Serial;
+            this.GUI.GroupControl0.Backend.Serial = this.Serial;
+            this.GUI.GroupControl1.Backend.Serial = this.Serial;
+            this.GUI.GroupControl2.Backend.Serial = this.Serial;
+            this.GUI.GroupControl3.Backend.Serial = this.Serial;
+            this.GUI.GroupControl4.Backend.Serial = this.Serial;
+            this.GUI.GroupControl5.Backend.Serial = this.Serial;
 
             //Link Buttons
             this.GUI.ConnectRefreshButton.Click += this.ConnectRefreshButtonClick;
