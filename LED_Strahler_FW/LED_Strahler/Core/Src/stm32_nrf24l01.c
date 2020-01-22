@@ -201,8 +201,16 @@ void NRF24L01_WriteRegisterMulti(uint8_t reg, uint8_t *data, uint8_t count) {
 }
 
 void NRF24L01_PowerUpTx(void) {
+	/* Disable RX/TX mode */
+	NRF24L01_CE_LOW;
+	/* Clear RX buffer */
+	NRF24L01_FLUSH_TX;
+	/* Clear interrupts */
 	NRF24L01_Clear_Interrupts();
+	/* Setup RX mode */
 	NRF24L01_WriteRegister(NRF24L01_REG_CONFIG, NRF24L01_CONFIG | (0 << NRF24L01_PRIM_RX) | (1 << NRF24L01_PWR_UP));
+	/* Start listening */
+	NRF24L01_CE_HIGH;
 }
 
 void NRF24L01_PowerUpRx(void) {

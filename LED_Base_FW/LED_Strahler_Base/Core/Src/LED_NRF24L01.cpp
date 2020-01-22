@@ -111,4 +111,6 @@ void LED_NRF24L01_Send(uint8_t* data)
 	HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
 	//Send new data
 	NRF24L01_Transmit(data);
+	//Delay after sending so that data is acutally send (don't know why this is neccessary)
+	HAL_Delay(2);
 }

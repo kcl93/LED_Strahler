@@ -368,7 +368,7 @@ namespace LED_Strahler_GUI
 
         public LEDGroupControl_Backend()
         {
-            
+
         }
 
         #endregion

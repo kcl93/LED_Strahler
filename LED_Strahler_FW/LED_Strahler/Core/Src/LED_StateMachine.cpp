@@ -163,6 +163,7 @@ void LED_StateMachine_Handle(void)
 			if(Fade_State >= Fade_Period)
 			{
 				Fade_State = 0;
+				FadeUp = !FadeUp;
 			}
 			else
 			{
@@ -186,6 +187,7 @@ void LED_StateMachine_Handle(void)
 			if(Fade_State >= Fade_Period)
 			{
 				Fade_State = 0;
+				FadeUp = !FadeUp;
 			}
 			else
 			{
@@ -384,7 +386,7 @@ void LED_SetModeFadeValue(uint16_t period, uint16_t hue, uint16_t saturation, ui
 	LED_Fade_Min = value_min;
 	Fade_Period = period;
 	Fade_State = 0;
-	LED_mode = LED_Mode_FadeSaturation;
+	LED_mode = LED_Mode_FadeValue;
 	FadeUp = true;
 	//Serial->Println("Fading value...");
 }
@@ -393,54 +395,52 @@ void LED_SetModeFadeValue(uint16_t period, uint16_t hue, uint16_t saturation, ui
 
 void SetHSV(uint16_t H, uint16_t S, uint16_t V)
 {
-	uint16_t X, Y;
+	uint32_t region, remainder;
+	uint16_t p, q, t;
 
-	if ((H >= 0) && (H < 10922))
+	region = H / 10923;
+	remainder = (H - (region * 10923)) * 6;
+
+	p = ((uint32_t)V * (uint32_t)(65535 - S)) >> 16;
+	q = ((uint32_t)V * (65535 - (((uint32_t)S * remainder) >> 16))) >> 16;
+	t = ((uint32_t)V * (65535 - (((uint32_t)S * (65535 - remainder)) >> 16))) >> 16;
+
+	switch (region)
 	{
-		X = H;
-		Y = (((uint32_t)V) * (uint32_t)X) / 10922;
-		LED_Red = V;
-		LED_Green = Y;
-		LED_Blue = 0;
-	}
-	else if ((H >= 10922) && (H < 21845))
-	{
-		X = H - 10922;
-		Y = (((uint32_t)V) * (uint32_t)X) / 10923;
-		LED_Red = V - Y;
-		LED_Green = V;
-		LED_Blue = 0;
-	}
-	else if ((H >= 21845) && (H < 32767))
-	{
-		X = H - 21845;
-		Y = (((uint32_t)V) * (uint32_t)X) / 10922;
-		LED_Red = 0;
-		LED_Green = V;
-		LED_Blue = Y;
-	}
-	else if ((H >= 32767) && (H < 43690))
-	{
-		X = H - 32767;
-		Y = (((uint32_t)V) * (uint32_t)X) / 10923;
-		LED_Red = 0;
-		LED_Green = V - Y;
-		LED_Blue = V;
-	}
-	else if ((H >= 43690) && (H < 54612))
-	{
-		X = H - 43690;
-		Y = (((uint32_t)V) * (uint32_t)X) / 10922;
-		LED_Red = Y;
-		LED_Green = 0;
-		LED_Blue = V;
-	}
-	else
-	{
-		X = H - 54612;
-		Y = (((uint32_t)V) * (uint32_t)X) / 10923;
-		LED_Red = V;
-		LED_Green = 0;
-		LED_Blue = V - Y;
+		case 0:
+			LED_Red = V;
+			LED_Green = t;
+			LED_Blue = p;
+			break;
+
+		case 1:
+			LED_Red = q;
+			LED_Green = V;
+			LED_Blue = p;
+			break;
+
+		case 2:
+			LED_Red = p;
+			LED_Green = V;
+			LED_Blue = t;
+			break;
+
+		case 3:
+			LED_Red = p;
+			LED_Green = q;
+			LED_Blue = V;
+			break;
+
+		case 4:
+			LED_Red = t;
+			LED_Green = p;
+			LED_Blue = V;
+			break;
+
+		default:
+			LED_Red = V;
+			LED_Green = p;
+			LED_Blue = q;
+			break;
 	}
 }

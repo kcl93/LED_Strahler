@@ -144,6 +144,10 @@ void LED_NRF24L01_IRQ(void)
 				Exec_FadeSaturation(packet.FadeSaturation);
 				break;
 
+			case CMD_FADEVALUE:
+				Exec_FadeValue(packet.FadeValue);
+				break;
+
 			case CMD_GETTEMPERATURE:
 				Exec_GetTempertaure(packet.GetTemperature);
 				break;
@@ -180,6 +184,8 @@ void LED_NRF24L01_Send(uint8_t* data)
 	LED_NRF24L01_WaitTx(5);
 	//Send new data
 	NRF24L01_Transmit(data);
+	//Delay after sending so that data is acutally send (don't know why this is neccessary)
+	HAL_Delay(2);
 }
 
 
@@ -318,8 +324,8 @@ inline void Exec_GetTempertaure(struct NRF24L01_GetTemperature packet)
 	((struct NRF24L01_GetTemperatureAnswer*)&packet)->CMD = CMD_GETTEMPERATUREANSWER;
 	((struct NRF24L01_GetTemperatureAnswer*)&packet)->LED_Temperature = LED_Thermomodel_GetTemp();
 	//Transmit answer once
-	NRF24L01_Transmit((uint8_t*)&packet);
-	while(NRF24L01_GetTransmissionStatus() == NRF24L01_Transmit_Status_Sending);
+	LED_NRF24L01_Send((uint8_t*)&packet);
+	LED_NRF24L01_WaitTx(5);
 	NRF24L01_PowerUpRx();
 }
 
