@@ -15,19 +15,19 @@
 
 
 //Functions to handle command
-void Exec_PingRequest(struct NRF24L01_PingRequest packet);
-void Exec_SetGroup(struct NRF24L01_SetGroup packet);
-void Exec_SetTimebase(struct NRF24L01_SetTimebase packet);
-void Exec_SetRGB(struct NRF24L01_SetRGB packet);
-void Exec_SetRGBW(struct NRF24L01_SetRGBW packet);
-void Exec_SetHSV(struct NRF24L01_SetHSV packet);
-void Exec_StrobeRGB(struct NRF24L01_StrobeRGB packet);
-void Exec_StrobeRGBW(struct NRF24L01_StrobeRGBW packet);
-void Exec_StrobeHSV(struct NRF24L01_StrobeHSV packet);
-void Exec_FadeHue(struct NRF24L01_FadeHue packet);
-void Exec_FadeSaturation(struct NRF24L01_FadeSaturation packet);
-void Exec_FadeValue(struct NRF24L01_FadeValue packet);
-void Exec_GetTempertaure(struct NRF24L01_GetTemperature packet);
+void Exec_PingRequest(struct NRF24L01_PingRequest &packet);
+void Exec_SetGroup(struct NRF24L01_SetGroup &packet);
+void Exec_SetTimebase(struct NRF24L01_SetTimebase &packet);
+void Exec_SetRGB(struct NRF24L01_SetRGB &packet);
+void Exec_SetRGBW(struct NRF24L01_SetRGBW &packet);
+void Exec_SetHSV(struct NRF24L01_SetHSV &packet);
+void Exec_StrobeRGB(struct NRF24L01_StrobeRGB &packet);
+void Exec_StrobeRGBW(struct NRF24L01_StrobeRGBW &packet);
+void Exec_StrobeHSV(struct NRF24L01_StrobeHSV &packet);
+void Exec_FadeHue(struct NRF24L01_FadeHue &packet);
+void Exec_FadeSaturation(struct NRF24L01_FadeSaturation &packet);
+void Exec_FadeValue(struct NRF24L01_FadeValue &packet);
+void Exec_GetTempertaure(struct NRF24L01_GetTemperature &packet);
 
 
 
@@ -62,9 +62,9 @@ void LED_NRF24L01_Init(void)
 	NRF24L01_CE_LOW;
 	OwnAddress = LED_NRF24L01_BASE_ADDR;
 	NRF24L01_WriteRegisterMulti(NRF24L01_REG_TX_ADDR, (uint8_t*)&OwnAddress, 4);	//Setup transmit address
-	NRF24L01_WriteRegisterMulti(NRF24L01_REG_RX_ADDR_P0, (uint8_t*)&OwnAddress, 4); //Store main broadcast receive address
 	OwnAddress = LED_NRF24L01_BROADCAST_ADDR;	//Setup pipe 0 for RX
-	NRF24L01_WriteRegisterMulti(NRF24L01_REG_RX_ADDR_P1, (uint8_t*)&OwnAddress, 4); //Store main broadcast receive address
+	NRF24L01_WriteRegisterMulti(NRF24L01_REG_RX_ADDR_P0, (uint8_t*)&OwnAddress, 4); //Store main broadcast receive address
+	//NRF24L01_WriteRegisterMulti(NRF24L01_REG_RX_ADDR_P1, (uint8_t*)&OwnAddress, 4); //Store main broadcast receive address
 	NRF24L01_CE_HIGH;
 
 	/* Go to RX mode */
@@ -87,7 +87,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
 void LED_NRF24L01_IRQ(void)
 {
-	union NRF24L01_DataPacket packet;
+	union NRF24L01_DataPacket packet = {0};
 	uint8_t status;
 
 	/* Read interrupts, If data is ready on NRF24L01+ */
@@ -190,29 +190,29 @@ void LED_NRF24L01_Send(uint8_t* data)
 
 
 
-inline void Exec_PingRequest(struct NRF24L01_PingRequest packet)
+inline void Exec_PingRequest(struct NRF24L01_PingRequest &packet)
 {
 	((struct NRF24L01_PingAnswer*)&packet)->CMD = CMD_PINGREQUESTANSWER;
 	((struct NRF24L01_PingAnswer*)&packet)->SlaveAddress = OwnAddress;
 	//Wait for a random time before answering
-	HAL_Delay((uint8_t)(OwnAddress));
-	LED_NRF24L01_Send((uint8_t*)&packet);
+	HAL_Delay(((NRF24L01_DataPacket*)&packet)->Data[1]);
+	LED_NRF24L01_Send(((NRF24L01_DataPacket*)&packet)->Data);
 	//Wait again for a random time before answering
-	HAL_Delay((uint8_t)(OwnAddress >> 8));
-	LED_NRF24L01_Send((uint8_t*)&packet);
+	HAL_Delay(((NRF24L01_DataPacket*)&packet)->Data[2]);
+	LED_NRF24L01_Send(((NRF24L01_DataPacket*)&packet)->Data);
 	//Wait again for a random time before answering
-	HAL_Delay((uint8_t)(OwnAddress >> 16));
-	LED_NRF24L01_Send((uint8_t*)&packet);
+	HAL_Delay(((NRF24L01_DataPacket*)&packet)->Data[3]);
+	LED_NRF24L01_Send(((NRF24L01_DataPacket*)&packet)->Data);
 	//Wait again for a random time before answering
-	HAL_Delay((uint8_t)(OwnAddress >> 24));
-	LED_NRF24L01_Send((uint8_t*)&packet);
+	HAL_Delay(((NRF24L01_DataPacket*)&packet)->Data[4]);
+	LED_NRF24L01_Send(((NRF24L01_DataPacket*)&packet)->Data);
 	LED_NRF24L01_WaitTx(5);
 	NRF24L01_PowerUpRx();
 }
 
 
 
-inline void Exec_SetGroup(struct NRF24L01_SetGroup packet)
+inline void Exec_SetGroup(struct NRF24L01_SetGroup &packet)
 {
 	if(packet.SlaveAddress == OwnAddress)
 	{
@@ -222,14 +222,14 @@ inline void Exec_SetGroup(struct NRF24L01_SetGroup packet)
 
 
 
-inline void Exec_SetTimebase(struct NRF24L01_SetTimebase packet)
+inline void Exec_SetTimebase(struct NRF24L01_SetTimebase &packet)
 {
 	LED_UpdateTimebase(packet.Timebase);
 }
 
 
 
-inline void Exec_SetRGB(struct NRF24L01_SetRGB packet)
+inline void Exec_SetRGB(struct NRF24L01_SetRGB &packet)
 {
 	if((packet.GroupID == 0) || (packet.GroupID == OwnGroup))
 	{
@@ -239,7 +239,7 @@ inline void Exec_SetRGB(struct NRF24L01_SetRGB packet)
 
 
 
-inline void Exec_SetRGBW(struct NRF24L01_SetRGBW packet)
+inline void Exec_SetRGBW(struct NRF24L01_SetRGBW &packet)
 {
 	if((packet.GroupID == 0) || (packet.GroupID == OwnGroup))
 	{
@@ -249,7 +249,7 @@ inline void Exec_SetRGBW(struct NRF24L01_SetRGBW packet)
 
 
 
-inline void Exec_SetHSV(struct NRF24L01_SetHSV packet)
+inline void Exec_SetHSV(struct NRF24L01_SetHSV &packet)
 {
 	if((packet.GroupID == 0) || (packet.GroupID == OwnGroup))
 	{
@@ -259,7 +259,7 @@ inline void Exec_SetHSV(struct NRF24L01_SetHSV packet)
 
 
 
-inline void Exec_StrobeRGB(struct NRF24L01_StrobeRGB packet)
+inline void Exec_StrobeRGB(struct NRF24L01_StrobeRGB &packet)
 {
 	if((packet.GroupID == 0) || (packet.GroupID == OwnGroup))
 	{
@@ -269,7 +269,7 @@ inline void Exec_StrobeRGB(struct NRF24L01_StrobeRGB packet)
 
 
 
-inline void Exec_StrobeRGBW(struct NRF24L01_StrobeRGBW packet)
+inline void Exec_StrobeRGBW(struct NRF24L01_StrobeRGBW &packet)
 {
 	if((packet.GroupID == 0) || (packet.GroupID == OwnGroup))
 	{
@@ -279,7 +279,7 @@ inline void Exec_StrobeRGBW(struct NRF24L01_StrobeRGBW packet)
 
 
 
-inline void Exec_StrobeHSV(struct NRF24L01_StrobeHSV packet)
+inline void Exec_StrobeHSV(struct NRF24L01_StrobeHSV &packet)
 {
 	if((packet.GroupID == 0) || (packet.GroupID == OwnGroup))
 	{
@@ -289,7 +289,7 @@ inline void Exec_StrobeHSV(struct NRF24L01_StrobeHSV packet)
 
 
 
-inline void Exec_FadeHue(struct NRF24L01_FadeHue packet)
+inline void Exec_FadeHue(struct NRF24L01_FadeHue &packet)
 {
 	if((packet.GroupID == 0) || (packet.GroupID == OwnGroup))
 	{
@@ -299,7 +299,7 @@ inline void Exec_FadeHue(struct NRF24L01_FadeHue packet)
 
 
 
-inline void Exec_FadeSaturation(struct NRF24L01_FadeSaturation packet)
+inline void Exec_FadeSaturation(struct NRF24L01_FadeSaturation &packet)
 {
 	if((packet.GroupID == 0) || (packet.GroupID == OwnGroup))
 	{
@@ -309,7 +309,7 @@ inline void Exec_FadeSaturation(struct NRF24L01_FadeSaturation packet)
 
 
 
-inline void Exec_FadeValue(struct NRF24L01_FadeValue packet)
+inline void Exec_FadeValue(struct NRF24L01_FadeValue &packet)
 {
 	if((packet.GroupID == 0) || (packet.GroupID == OwnGroup))
 	{
@@ -319,7 +319,7 @@ inline void Exec_FadeValue(struct NRF24L01_FadeValue packet)
 
 
 
-inline void Exec_GetTempertaure(struct NRF24L01_GetTemperature packet)
+inline void Exec_GetTempertaure(struct NRF24L01_GetTemperature &packet)
 {
 	((struct NRF24L01_GetTemperatureAnswer*)&packet)->CMD = CMD_GETTEMPERATUREANSWER;
 	((struct NRF24L01_GetTemperatureAnswer*)&packet)->LED_Temperature = LED_Thermomodel_GetTemp();
