@@ -69,7 +69,7 @@ uint8_t NRF24L01_Init(uint8_t channel, uint8_t payload_size) {
 	
 	/* Reset nRF24L01+ to power on registers values */
 	NRF24L01_SoftwareReset();
- 
+	
 	NRF24L01_GetStatus();
 
 	/* Channel select */
@@ -98,8 +98,8 @@ uint8_t NRF24L01_Init(uint8_t channel, uint8_t payload_size) {
 	/* Enable RX addresses */
 	//NRF24L01_WriteRegister(NRF24L01_REG_EN_RXADDR, 0x3F);
 
-	/* Disable RX addresses beside pipelines 0 and 1 */
-	NRF24L01_WriteRegister(NRF24L01_REG_EN_RXADDR, ((1 << NRF24L01_ERX_P0) | (1 << NRF24L01_ERX_P1)));
+	/* Disable RX addresses beside pipeline 0 */
+	NRF24L01_WriteRegister(NRF24L01_REG_EN_RXADDR, (1 << NRF24L01_ERX_P0));
 
 	/* Auto retransmit delay: 1000 (4x250) us and Up to 15 retransmit trials */
 	//NRF24L01_WriteRegister(NRF24L01_REG_SETUP_RETR, 0x4F);
@@ -168,9 +168,7 @@ uint8_t NRF24L01_ReadRegister(uint8_t reg) {
 	Data[1] = 0;
 	NRF24L01_CSN_LOW;
 	NRF24L01_SPI_SendMulti(Data, Data, 2);
-											  
 	NRF24L01_CSN_HIGH;
- 
 	return Data[1];
 }
 
@@ -201,29 +199,39 @@ void NRF24L01_WriteRegisterMulti(uint8_t reg, uint8_t *data, uint8_t count) {
 }
 
 void NRF24L01_PowerUpTx(void) {
-	/* Disable RX/TX mode */
-	NRF24L01_CE_LOW;
-	/* Clear RX buffer */
-	NRF24L01_FLUSH_TX;
-	/* Clear interrupts */
-	NRF24L01_Clear_Interrupts();
-	/* Setup RX mode */
-	NRF24L01_WriteRegister(NRF24L01_REG_CONFIG, NRF24L01_CONFIG | (0 << NRF24L01_PRIM_RX) | (1 << NRF24L01_PWR_UP));
-	/* Start listening */
-	NRF24L01_CE_HIGH;
+	// Check if Tx is alread active
+	uint8_t reg = NRF24L01_ReadRegister(NRF24L01_REG_CONFIG);
+	if(!(reg & (1 << NRF24L01_PWR_UP)) || (reg & (1 << NRF24L01_PRIM_RX)))
+	{
+		/* Disable RX/TX mode */
+		NRF24L01_CE_LOW;
+		/* Clear RX buffer */
+		NRF24L01_FLUSH_TX;
+		/* Clear interrupts */
+		NRF24L01_Clear_Interrupts();
+		/* Setup RX mode */
+		NRF24L01_WriteRegister(NRF24L01_REG_CONFIG, NRF24L01_CONFIG | (0 << NRF24L01_PRIM_RX) | (1 << NRF24L01_PWR_UP));
+		/* Start listening */
+		NRF24L01_CE_HIGH;
+	}
 }
 
 void NRF24L01_PowerUpRx(void) {
-	/* Disable RX/TX mode */
-	NRF24L01_CE_LOW;
-	/* Clear RX buffer */
-	NRF24L01_FLUSH_RX;
-	/* Clear interrupts */
-	NRF24L01_Clear_Interrupts();
-	/* Setup RX mode */
-	NRF24L01_WriteRegister(NRF24L01_REG_CONFIG, NRF24L01_CONFIG | 1 << NRF24L01_PWR_UP | 1 << NRF24L01_PRIM_RX);
-	/* Start listening */
-	NRF24L01_CE_HIGH;
+	// Check if Rx is alread active
+	uint8_t reg = NRF24L01_ReadRegister(NRF24L01_REG_CONFIG);
+	if(!(reg & (1 << NRF24L01_PWR_UP)) || !(reg & (1 << NRF24L01_PRIM_RX)))
+	{
+		/* Disable RX/TX mode */
+		NRF24L01_CE_LOW;
+		/* Clear RX buffer */
+		NRF24L01_FLUSH_RX;
+		/* Clear interrupts */
+		NRF24L01_Clear_Interrupts();
+		/* Setup RX mode */
+		NRF24L01_WriteRegister(NRF24L01_REG_CONFIG, NRF24L01_CONFIG | 1 << NRF24L01_PWR_UP | 1 << NRF24L01_PRIM_RX);
+		/* Start listening */
+		NRF24L01_CE_HIGH;
+	}
 }
 
 void NRF24L01_PowerDown(void) {

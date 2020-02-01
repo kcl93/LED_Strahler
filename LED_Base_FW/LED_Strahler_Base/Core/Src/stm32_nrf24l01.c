@@ -199,29 +199,39 @@ void NRF24L01_WriteRegisterMulti(uint8_t reg, uint8_t *data, uint8_t count) {
 }
 
 void NRF24L01_PowerUpTx(void) {
-	/* Disable RX/TX mode */
-	NRF24L01_CE_LOW;
-	/* Clear RX buffer */
-	NRF24L01_FLUSH_TX;
-	/* Clear interrupts */
-	NRF24L01_Clear_Interrupts();
-	/* Setup RX mode */
-	NRF24L01_WriteRegister(NRF24L01_REG_CONFIG, NRF24L01_CONFIG | (0 << NRF24L01_PRIM_RX) | (1 << NRF24L01_PWR_UP));
-	/* Start listening */
-	NRF24L01_CE_HIGH;
+	// Check if Tx is alread active
+	uint8_t reg = NRF24L01_ReadRegister(NRF24L01_REG_CONFIG);
+	if(!(reg & (1 << NRF24L01_PWR_UP)) || (reg & (1 << NRF24L01_PRIM_RX)))
+	{
+		/* Disable RX/TX mode */
+		NRF24L01_CE_LOW;
+		/* Clear RX buffer */
+		NRF24L01_FLUSH_TX;
+		/* Clear interrupts */
+		NRF24L01_Clear_Interrupts();
+		/* Setup RX mode */
+		NRF24L01_WriteRegister(NRF24L01_REG_CONFIG, NRF24L01_CONFIG | (0 << NRF24L01_PRIM_RX) | (1 << NRF24L01_PWR_UP));
+		/* Start listening */
+		NRF24L01_CE_HIGH;
+	}
 }
 
 void NRF24L01_PowerUpRx(void) {
-	/* Disable RX/TX mode */
-	NRF24L01_CE_LOW;
-	/* Clear RX buffer */
-	NRF24L01_FLUSH_RX;
-	/* Clear interrupts */
-	NRF24L01_Clear_Interrupts();
-	/* Setup RX mode */
-	NRF24L01_WriteRegister(NRF24L01_REG_CONFIG, NRF24L01_CONFIG | 1 << NRF24L01_PWR_UP | 1 << NRF24L01_PRIM_RX);
-	/* Start listening */
-	NRF24L01_CE_HIGH;
+	// Check if Rx is alread active
+	uint8_t reg = NRF24L01_ReadRegister(NRF24L01_REG_CONFIG);
+	if(!(reg & (1 << NRF24L01_PWR_UP)) || !(reg & (1 << NRF24L01_PRIM_RX)))
+	{
+		/* Disable RX/TX mode */
+		NRF24L01_CE_LOW;
+		/* Clear RX buffer */
+		NRF24L01_FLUSH_RX;
+		/* Clear interrupts */
+		NRF24L01_Clear_Interrupts();
+		/* Setup RX mode */
+		NRF24L01_WriteRegister(NRF24L01_REG_CONFIG, NRF24L01_CONFIG | 1 << NRF24L01_PWR_UP | 1 << NRF24L01_PRIM_RX);
+		/* Start listening */
+		NRF24L01_CE_HIGH;
+	}
 }
 
 void NRF24L01_PowerDown(void) {
@@ -266,7 +276,7 @@ void NRF24L01_GetData(uint8_t* data) {
 	NRF24L01_CSN_HIGH;
 	
 	/* Reset status register, clear RX_DR interrupt flag */
-	NRF24L01_WriteRegister(NRF24L01_REG_STATUS, (1 << NRF24L01_RX_DR));
+	//NRF24L01_WriteRegister(NRF24L01_REG_STATUS, (1 << NRF24L01_RX_DR));
 }
 
 uint8_t NRF24L01_DataReady(void) {

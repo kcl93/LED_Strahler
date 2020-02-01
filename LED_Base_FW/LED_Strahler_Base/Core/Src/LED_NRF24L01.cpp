@@ -45,9 +45,9 @@ void LED_NRF24L01_Init(void)
 	NRF24L01_CE_LOW;
 	OwnAddress = LED_NRF24L01_BROADCAST_ADDR;
 	NRF24L01_WriteRegisterMulti(NRF24L01_REG_TX_ADDR, (uint8_t*)&OwnAddress, 4);	//Setup transmit address
-	NRF24L01_WriteRegisterMulti(NRF24L01_REG_RX_ADDR_P0, (uint8_t*)&OwnAddress, 4);	//Setup receive address
 	OwnAddress = LED_NRF24L01_BASE_ADDR;
-	NRF24L01_WriteRegisterMulti(NRF24L01_REG_RX_ADDR_P1, (uint8_t*)&OwnAddress, 4);	//Setup receive address
+	NRF24L01_WriteRegisterMulti(NRF24L01_REG_RX_ADDR_P0, (uint8_t*)&OwnAddress, 4);	//Setup receive address
+	//NRF24L01_WriteRegisterMulti(NRF24L01_REG_RX_ADDR_P1, (uint8_t*)&OwnAddress, 4);	//Setup receive address
 	NRF24L01_CE_HIGH;
 
 	/* Go to RX mode */
@@ -55,27 +55,15 @@ void LED_NRF24L01_Init(void)
 }
 
 
-
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-{
-	if(GPIO_Pin == NRF_IRQ_Pin)
-	{
-		LED_NRF24L01_IRQ();
-	}
-}
-
-
 void LED_NRF24L01_IRQ(void)
 {
-	union NRF24L01_DataPacket packet;
 	uint8_t status;
 
 	/* Read interrupts, If data is ready on NRF24L01+ */
 	status = NRF24L01_Clear_Interrupts(); //Reads status register and then clears it
 	if (status & (1 << NRF24L01_RX_DR))
 	{
-		/* Get data from NRF24L01+ */
-		NRF24L01_GetData(packet.Data);
+		NRF24L01_FLUSH_RX; //Flush RX as no data should be received here
 	}
 	if(status & (1 << NRF24L01_TX_DS))
 	{
@@ -94,7 +82,12 @@ void LED_NRF24L01_WaitTx(uint8_t timeout)
 	starttime = HAL_GetTick();
 	while((HAL_GetTick() - starttime) < timeout)
 	{
-		status = NRF24L01_GetStatus();
+		status = NRF24L01_Clear_Interrupts();
+		if(status & (1 << NRF24L01_TX_DS))
+		{
+			//Reset LED as data was sent
+			HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
+		}
 		if (!NRF24L01_CHECK_BIT(status, NRF24L01_TX_FULL))
 		{
 			break; //New data can be sent once there is some free room in the TX FIFO :)
@@ -105,12 +98,17 @@ void LED_NRF24L01_WaitTx(uint8_t timeout)
 
 void LED_NRF24L01_Send(uint8_t* data)
 {
+	uint32_t starttime = HAL_GetTick();
+
 	//Wait for previous transfer to finish or timeout
 	LED_NRF24L01_WaitTx(5);
+
 	//Set LED that new data will be sent
 	HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
+
 	//Send new data
 	NRF24L01_Transmit(data);
-	//Delay after sending so that data is acutally send (don't know why this is neccessary)
-	HAL_Delay(2);
+
+	//Delay after sending so that data is actually send (don't know why this is neccessary)
+	while(((HAL_GetTick() - starttime) < 2) && (HAL_GPIO_ReadPin(NRF_IRQ_GPIO_Port, NRF_IRQ_Pin) != 0));
 }

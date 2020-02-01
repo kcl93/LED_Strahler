@@ -46,7 +46,7 @@ void LED_Base_Setup(void)
 
 void LED_Base_Handle(void)
 {
-	NRF24L01_DataPacket cmd;
+	NRF24L01_DataPacket cmd = {0};
 	cmd.CMD = CMD_IGNORE;
 
 	//Parse inputs for new data
@@ -61,6 +61,12 @@ void LED_Base_Handle(void)
 	else if(PC_parser->Available() == true)
 	{
 		PC_parser->ReadCMD(&cmd);
+	}
+
+	//Check IRQ pin
+	if(HAL_GPIO_ReadPin(NRF_IRQ_GPIO_Port, NRF_IRQ_Pin) == 0)
+	{
+		LED_NRF24L01_IRQ();
 	}
 
 	//Check if a new command was received
@@ -111,20 +117,38 @@ inline void ExecPingRequest(NRF24L01_DataPacket *cmd)
 	NRF24L01_PowerUpRx();
 
 	time = HAL_GetTick();
-	while((HAL_GetTick() - time) >= PING_TIMEOUT)
+	while((HAL_GetTick() - time) <= PING_TIMEOUT)
 	{
-		if (NRF24L01_GetStatus() & (1 << NRF24L01_RX_DR))
+		if(HAL_GPIO_ReadPin(NRF_IRQ_GPIO_Port, NRF_IRQ_Pin) == 0) //Wait for data being received
 		{
-			/* Get data from NRF24L01+ */
-			NRF24L01_GetData(cmd->Data);
-
-			if(cmd->CMD == CMD_PINGREQUESTANSWER)
+			if(NRF24L01_Clear_Interrupts() & (1 << NRF24L01_RX_DR))
 			{
-				//Print answer to both serials
-				sprintf(buf, "P: %u\n", (unsigned int)cmd->PingAnswer.SlaveAddress);
-				BT_uart->Print(buf);
-				PC_uart->Print(buf);
+				/* Get data from NRF24L01+ */
+				NRF24L01_GetData(cmd->Data);
+
+				if(cmd->CMD == CMD_PINGREQUESTANSWER)
+				{
+					//Print answer to both serials
+					sprintf(buf, "P: %u\n", (unsigned int)cmd->PingAnswer.SlaveAddress);
+					//BT_uart->Print(buf);
+					PC_uart->Print(buf);
+				}
 			}
+		}
+	}
+
+	//Check if more data is available in the FIFO and get the rest
+	while(!(NRF24L01_ReadRegister(NRF24L01_REG_FIFO_STATUS) & (1 << NRF24L01_RX_EMPTY)))
+	{
+		/* Get data from NRF24L01+ */
+		NRF24L01_GetData(cmd->Data);
+
+		if(cmd->CMD == CMD_PINGREQUESTANSWER)
+		{
+			//Print answer to both serials
+			sprintf(buf, "P: %u\n", (unsigned int)cmd->PingAnswer.SlaveAddress);
+			//BT_uart->Print(buf);
+			PC_uart->Print(buf);
 		}
 	}
 
@@ -151,18 +175,21 @@ inline void ExecGetTemperature(NRF24L01_DataPacket *cmd)
 	time = HAL_GetTick();
 	while((HAL_GetTick() - time) >= GET_INFO_TIMEOUT)
 	{
-		if (NRF24L01_GetStatus() & (1 << NRF24L01_RX_DR))
+		if(HAL_GPIO_ReadPin(NRF_IRQ_GPIO_Port, NRF_IRQ_Pin) == 0) //Wait for data being received
 		{
-			/* Get data from NRF24L01+ */
-			NRF24L01_GetData(cmd->Data);
-
-			if(cmd->CMD == CMD_GETTEMPERATUREANSWER)
+			if(NRF24L01_Clear_Interrupts() & (1 << NRF24L01_RX_DR))
 			{
-				//Print answer to both serials
-				sprintf(buf, "T: %.1f\n", cmd->GetTemperatureAnswer.LED_Temperature);
-				BT_uart->Print(buf);
-				PC_uart->Print(buf);
-				return;
+				/* Get data from NRF24L01+ */
+				NRF24L01_GetData(cmd->Data);
+
+				if(cmd->CMD == CMD_GETTEMPERATUREANSWER)
+				{
+					//Print answer to both serials
+					sprintf(buf, "T: %.1f\n", cmd->GetTemperatureAnswer.LED_Temperature);
+					BT_uart->Print(buf);
+					PC_uart->Print(buf);
+					return;
+				}
 			}
 		}
 	}

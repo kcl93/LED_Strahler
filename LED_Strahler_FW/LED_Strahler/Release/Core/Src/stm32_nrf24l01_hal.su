@@ -1,4 +1,0 @@
-stm32_nrf24l01_hal.c:13:9:NRF24L01_SPI_Send	24	static
-stm32_nrf24l01_hal.c:21:6:NRF24L01_SPI_WriteMulti	8	static
-stm32_nrf24l01_hal.c:28:6:NRF24L01_SPI_ReadMulti	24	static
-stm32_nrf24l01_hal.c:40:6:NRF24L01_SPI_SendMulti	16	static

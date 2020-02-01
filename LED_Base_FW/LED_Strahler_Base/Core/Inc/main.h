@@ -78,7 +78,6 @@ void Error_Handler(void);
 #define OP_INP_GPIO_Port GPIOA
 #define NRF_IRQ_Pin GPIO_PIN_4
 #define NRF_IRQ_GPIO_Port GPIOC
-#define NRF_IRQ_EXTI_IRQn EXTI4_IRQn
 #define OP_INM_Pin GPIO_PIN_5
 #define OP_INM_GPIO_Port GPIOC
 #define NRF_CS_Pin GPIO_PIN_1

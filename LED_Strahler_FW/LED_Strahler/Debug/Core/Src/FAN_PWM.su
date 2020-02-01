@@ -1,2 +1,0 @@
-FAN_PWM.cpp:16:6:void FAN_PWM_Init()	8	static
-FAN_PWM.cpp:33:6:void FAN_PWM_SetDutyCycle(uint16_t)	16	static

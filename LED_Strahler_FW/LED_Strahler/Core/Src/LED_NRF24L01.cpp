@@ -169,7 +169,7 @@ void LED_NRF24L01_WaitTx(uint8_t timeout)
 	starttime = HAL_GetTick();
 	while((HAL_GetTick() - starttime) < timeout)
 	{
-		status = NRF24L01_GetStatus();
+		status = NRF24L01_Clear_Interrupts();
 		if (!NRF24L01_CHECK_BIT(status, NRF24L01_TX_FULL))
 		{
 			break; //New data can be sent once there is some free room in the TX FIFO :)
@@ -180,12 +180,16 @@ void LED_NRF24L01_WaitTx(uint8_t timeout)
 
 void LED_NRF24L01_Send(uint8_t* data)
 {
+	uint32_t starttime = HAL_GetTick();
+
 	//Wait for previous transfer to finish or timeout
 	LED_NRF24L01_WaitTx(5);
+
 	//Send new data
 	NRF24L01_Transmit(data);
-	//Delay after sending so that data is acutally send (don't know why this is neccessary)
-	HAL_Delay(2);
+
+	//Delay after sending so that data is actually send (don't know why this is neccessary)
+	while(((HAL_GetTick() - starttime) < 2) && (HAL_GPIO_ReadPin(NRF_IRQ_GPIO_Port, NRF_IRQ_Pin) != 0));
 }
 
 

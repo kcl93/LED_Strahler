@@ -1,2 +1,0 @@
-NTC.cpp:57:6:void NTC_Init()	8	static
-NTC.cpp:65:7:float NTC_Get_Temp()	40	static

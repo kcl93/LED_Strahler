@@ -72,6 +72,7 @@ void LED_SerialParser::Decode(void)
 {
 	uint8_t ret = 0;
 	unsigned int u32Tmp[8] = {0};
+	this->cmd = {0};
 
 	//Get command
 	ret = sscanf(this->cmd_buf, "G%u %u %u %u %u %u %u %u", &u32Tmp[0], &u32Tmp[1], &u32Tmp[2], &u32Tmp[3], &u32Tmp[4], &u32Tmp[5], &u32Tmp[6], &u32Tmp[7]);

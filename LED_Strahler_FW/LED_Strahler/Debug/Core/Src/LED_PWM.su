@@ -1,8 +1,0 @@
-LED_PWM.cpp:41:6:void LED_PWM_Init()	8	static
-LED_PWM.cpp:62:6:void LED_PWM_SetRGBW(uint16_t, uint16_t, uint16_t, uint16_t)	24	static
-LED_PWM.cpp:83:6:void LED_PWM_SetPWM_TIM(uint32_t, uint32_t, uint16_t)	40	static
-LED_PWM.cpp:109:6:void LED_PWM_SetBoost(uint8_t)	16	static
-LED_PWM.cpp:117:6:void LED_PWM_CheckBoost()	8	static
-LED_PWM.cpp:133:6:void LED_PWM_SetFastPWM(uint16_t, uint16_t, uint16_t, uint16_t)	24	static
-LED_PWM.cpp:160:6:void LED_PWM_SetSlowPWM(uint16_t, uint16_t, uint16_t, uint16_t)	24	static
-LED_PWM.cpp:187:17:uint16_t MapRounded(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)	24	static
