@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO.Ports;
-using System.Threading;
-
-namespace LED_Strahler_GUI
+﻿namespace LED_Strahler_GUI
 {
+    using System.Collections.Generic;
+    using System.Text;
+    using System.IO.Ports;
+    using System.Threading;
+    using System.Globalization;
+
     public class LED_Strahler_Serial
     {
         #region Properties
@@ -61,7 +59,14 @@ namespace LED_Strahler_GUI
                     else
                     {
                         Serial.ReadTimeout = TimeoutMilliseconds;
-                        Text = Serial.ReadLine();
+                        try
+                        {
+                            Text = Serial.ReadLine();
+                        }
+                        catch
+                        {
+                            return ""; //Timeout
+                        }
                     }
                     return Text;
                 }
@@ -111,9 +116,9 @@ namespace LED_Strahler_GUI
             }
         }
 
-        public void PingRequest(out List<int> UUIDs)
+        public void PingRequest(out List<uint> UUIDs)
         {
-            UUIDs = new List<int>();
+            UUIDs = new List<uint>();
 
             string Ret = this.WriteRead("G" + (int)Commands.PingRequest, 1100, true);
 
@@ -123,15 +128,18 @@ namespace LED_Strahler_GUI
                 Strahler.RemoveAt(Strahler.Count - 1); //Last element is either an empty string or corrupted data
                 foreach (string ID in Strahler)
                 {
-                    if(int.TryParse(ID, out int UUID) == true)
+                    if(uint.TryParse(ID, out uint UUID) == true)
                     {
-                        UUIDs.Add(UUID);
+                        if(UUIDs.Contains(UUID) == false)
+                        {
+                            UUIDs.Add(UUID);
+                        }
                     }
                 }
             }
         }
 
-        public void SetGroup(byte GroupID, int UUID)
+        public void SetGroup(byte GroupID, uint UUID)
         {
             this.Write("G" + (int)Commands.SetGroup + " " + UUID + " " + GroupID);
         }
@@ -190,7 +198,7 @@ namespace LED_Strahler_GUI
         {
             string Ret = this.WriteRead("G" + (int)Commands.GetTemperature + " " + Strahler.UUID, 100);
 
-            if ((Ret.Length >= 6) && (Ret.StartsWith("T: ") == true) && (double.TryParse(Ret.Substring(3), out double Temp) == true))
+            if ((Ret.Length >= 6) && (Ret.StartsWith("T: ") == true) && (double.TryParse(Ret.Substring(3), NumberStyles.Number, CultureInfo.InvariantCulture, out double Temp) == true))
             {
                 Strahler.Temperature = Temp;
             }

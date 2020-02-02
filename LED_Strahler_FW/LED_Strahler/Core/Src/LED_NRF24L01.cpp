@@ -29,6 +29,7 @@ void Exec_FadeSaturation(struct NRF24L01_FadeSaturation &packet);
 void Exec_FadeValue(struct NRF24L01_FadeValue &packet);
 void Exec_GetTempertaure(struct NRF24L01_GetTemperature &packet);
 
+uint32_t rc_crc32(uint32_t crc, const char *buf, size_t len);
 
 
 /* Own address */
@@ -47,9 +48,6 @@ const char* timestamp = __TIMESTAMP__;
 
 void LED_NRF24L01_Init(void)
 {
-	//Wrapper to char array containing the compilation timestamp
-	uint32_t *wrapper = (uint32_t*)timestamp;
-
 	OwnGroup = 0;
 
 	//Init SPI interface
@@ -71,9 +69,54 @@ void LED_NRF24L01_Init(void)
 	NRF24L01_PowerUpRx();
 
 	//Calculate own unique address
-	OwnAddress = wrapper[0] ^ wrapper[1] ^ wrapper[2] ^ wrapper[3] ^ wrapper[4] ^ wrapper[5];	//Calculate own address
+	OwnAddress = rc_crc32(0, timestamp, 20);	//Calculate own address
+	OwnAddress = 0x11111111;
 }
 
+
+uint32_t rc_crc32(uint32_t crc, const char *buf, size_t len)
+{
+	static uint32_t table[256];
+	static int have_table = 0;
+	uint32_t rem;
+	uint8_t octet;
+	int i, j;
+	const char *p, *q;
+
+	/* This check is not thread safe; there is no mutex. */
+	if (have_table == 0)
+	{
+		/* Calculate CRC table. */
+		for (i = 0; i < 256; i++)
+		{
+			rem = i;  /* remainder from polynomial division */
+			for (j = 0; j < 8; j++)
+			{
+				if (rem & 1)
+				{
+					rem >>= 1;
+					rem ^= 0xedb88320;
+				}
+				else
+				{
+					rem >>= 1;
+				}
+			}
+			table[i] = rem;
+		}
+		have_table = 1;
+	}
+
+	crc = ~crc;
+	q = buf + len;
+	for (p = buf; p < q; p++)
+	{
+		octet = *p;  /* Cast to unsigned octet. */
+		crc = (crc >> 8) ^ table[(crc & 0xff) ^ octet];
+	}
+
+	return ~crc;
+}
 
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
@@ -327,6 +370,8 @@ inline void Exec_GetTempertaure(struct NRF24L01_GetTemperature &packet)
 {
 	((struct NRF24L01_GetTemperatureAnswer*)&packet)->CMD = CMD_GETTEMPERATUREANSWER;
 	((struct NRF24L01_GetTemperatureAnswer*)&packet)->LED_Temperature = LED_Thermomodel_GetTemp();
+	//Wait for 2ms to be sure that the base is able to receive data
+	HAL_Delay(2);
 	//Transmit answer once
 	LED_NRF24L01_Send((uint8_t*)&packet);
 	LED_NRF24L01_WaitTx(5);

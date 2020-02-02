@@ -52,18 +52,22 @@ namespace LED_Strahler_GUI
             }
 
             //Ping for devices
-            this.Serial.PingRequest(out List<int> UUIDs);
+            this.Serial.PingRequest(out List<uint> UUIDs);
 
             //Setup new device list
             List<LED_Strahler> DeviceList = new List<LED_Strahler>();
-            foreach (int UUID in UUIDs)
+            foreach (uint UUID in UUIDs)
             {
                 DeviceList.Add(new LED_Strahler(UUID));
+                DeviceList[DeviceList.Count() - 1].Serial = this.Serial;
             }
             this.GUI.DeviceList = DeviceList;
 
-            //Refresh datagrid
-            this.GUI.DeviceGrid.Items.Refresh();
+            //Read all temperatures once
+            foreach (LED_Strahler Strahler in this.GUI.DeviceList)
+            {
+                this.Serial.GetTemperature(Strahler);
+            }
 
             this.GUI.DeviceGrid.IsEnabled = true;
         }
@@ -74,9 +78,6 @@ namespace LED_Strahler_GUI
             {
                 this.Serial.GetTemperature(Strahler);
             }
-
-            //Refresh datagrid
-            this.GUI.DeviceGrid.Items.Refresh();
         }
 
         #endregion

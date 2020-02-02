@@ -173,7 +173,7 @@ inline void ExecGetTemperature(NRF24L01_DataPacket *cmd)
 	NRF24L01_PowerUpRx();
 
 	time = HAL_GetTick();
-	while((HAL_GetTick() - time) >= GET_INFO_TIMEOUT)
+	while((HAL_GetTick() - time) <= GET_INFO_TIMEOUT)
 	{
 		if(HAL_GPIO_ReadPin(NRF_IRQ_GPIO_Port, NRF_IRQ_Pin) == 0) //Wait for data being received
 		{
@@ -186,9 +186,9 @@ inline void ExecGetTemperature(NRF24L01_DataPacket *cmd)
 				{
 					//Print answer to both serials
 					sprintf(buf, "T: %.1f\n", cmd->GetTemperatureAnswer.LED_Temperature);
-					BT_uart->Print(buf);
+					//BT_uart->Print(buf);
 					PC_uart->Print(buf);
-					return;
+					break;
 				}
 			}
 		}

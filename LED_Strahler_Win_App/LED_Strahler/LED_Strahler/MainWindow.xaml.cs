@@ -16,7 +16,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace LED_Strahler_GUI
-{
+{ 
     /// <summary>
     /// Interaktionslogik für MainWindow.xaml
     /// </summary>
@@ -38,17 +38,12 @@ namespace LED_Strahler_GUI
 
         #region Properties
 
-        public List<LED_Strahler> DeviceList { get; set; } = new List<LED_Strahler> { };
-
-        public List<string> AvailableGroups { get; set; } = new List<string>()
+        private List<LED_Strahler> _DeviceList = new List<LED_Strahler>();
+        public List<LED_Strahler> DeviceList
         {
-            "Broadcast",
-            "Group 1",
-            "Group 2",
-            "Group 3",
-            "Group 4",
-            "Group 5"
-        };
+            get { return _DeviceList; }
+            set { _DeviceList = value; NotifyPropertyChanged(); }
+        }
 
         private List<string> _ComPortList = new List<string>();
         public List<string> ComPortList
@@ -71,6 +66,21 @@ namespace LED_Strahler_GUI
         #endregion
     }
 
+
+    public class AvailableGroups
+    {
+        public List<string> Groups { get; set; } = new List<string>()
+        {
+            "Broadcast",
+            "Group 1",
+            "Group 2",
+            "Group 3",
+            "Group 4",
+            "Group 5"
+        };
+    }
+
+
     public class DoubleToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -81,6 +91,36 @@ namespace LED_Strahler_GUI
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             return 0.0;
+        }
+    }
+
+
+    public class UintToHexStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return ((uint)value).ToString("X8");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return 0;
+        }
+    }
+
+
+    public class IntToGroupConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var Group = new AvailableGroups();
+            return Group.Groups[(int)value];
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var Group = new AvailableGroups();
+            return Group.Groups.IndexOf(value.ToString());
         }
     }
 }

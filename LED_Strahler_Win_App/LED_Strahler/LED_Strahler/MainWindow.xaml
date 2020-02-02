@@ -1,4 +1,4 @@
-﻿<Window x:Class="LED_Strahler_GUI.MainWindow"
+﻿<Window x:Name="window" x:Class="LED_Strahler_GUI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,6 +9,9 @@
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
         <local:DoubleToStringConverter x:Key="DoubleToStringConverter"/>
+        <local:UintToHexStringConverter x:Key="UintToHexStringConverter"/>
+        <local:AvailableGroups x:Key="AvailableGroups"/>
+        <local:IntToGroupConverter x:Key="IntToGroupConverter"/>
     </Window.Resources>
     <Grid Name="MainGrid">
         <TabControl>
@@ -59,10 +62,21 @@
                     </GroupBox>
                     <GroupBox Grid.Column="1" Header="Group setup">
                         <DataGrid Width="500" HorizontalAlignment="Left" Name="DeviceGrid" ItemsSource="{Binding DeviceList}" AutoGenerateColumns="False" CanUserResizeColumns="False" VerticalScrollBarVisibility="Auto" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" SelectionUnit="Cell" IsEnabled="False">
+                            <!--<DataGrid.CellStyle>
+                                <Style TargetType="{x:Type DataGridCell}">
+                                    <Setter Property="Foreground" Value="Black" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="{x:Null}" />
+                                            <Setter Property="BorderBrush" Value="{x:Null}" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.CellStyle>-->
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Device ID" Width="150" Binding="{Binding UUID}" IsReadOnly="True"/>
-                                <DataGridComboBoxColumn Header="Group" Width="100" SelectedItemBinding="{Binding Group}" ItemsSource="{Binding AvailableGroups}"/>
-                                <DataGridTextColumn Header="Temperature" Width="150" Binding="{Binding Temperature, Converter={StaticResource DoubleToStringConverter}}"/>
+                                <DataGridTextColumn Header="Device ID" Width="150" Binding="{Binding UUID, Converter={StaticResource UintToHexStringConverter}}" IsReadOnly="True"/>
+                                <DataGridComboBoxColumn Header="Group" Width="100" SelectedValueBinding="{Binding Group, Converter={StaticResource IntToGroupConverter}}" ItemsSource="{Binding Groups, Source={StaticResource AvailableGroups}}"/>
+                                <DataGridTextColumn Header="Temperature" Width="150" Binding="{Binding Temperature, Converter={StaticResource DoubleToStringConverter}}" IsReadOnly="True"/>
                                 <DataGridCheckBoxColumn Header="Test" Width="*" Binding="{Binding TestState}"/>
                             </DataGrid.Columns>
                         </DataGrid>
