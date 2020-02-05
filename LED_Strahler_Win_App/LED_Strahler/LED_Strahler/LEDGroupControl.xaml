@@ -56,11 +56,11 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" Content="Overall brightness:"/>
-                <Slider Grid.Row="1" Name="BrightnessSlider" Maximum="65535" SmallChange="1" Value="{Binding BrightnessValue}"/>
+                <Slider Grid.Row="1" Name="BrightnessSlider" Maximum="65535" SmallChange="1" Value="{Binding BrightnessValue}" IsMoveToPointEnabled="True"/>
                 <Label Grid.Row="2" Content="Fade/Strobe period"/>
-                <Slider Grid.Row="3" Name="PeriodSlider" Maximum="65535" SmallChange="1" Value="{Binding PeriodValue}"/>
+                <Slider Grid.Row="3" Name="PeriodSlider" Maximum="65535" SmallChange="1" Value="{Binding PeriodValue}" IsMoveToPointEnabled="True"/>
                 <Label Grid.Row="4" Content="Number of strobe pulses"/>
-                <Slider Grid.Row="5" Name="StrobeCountSlider" Maximum="65535" SmallChange="1" Value="{Binding StrobeCountValue}"/>
+                <Slider Grid.Row="5" Name="StrobeCountSlider" Maximum="65535" SmallChange="1" Value="{Binding StrobeCountValue}" IsMoveToPointEnabled="True"/>
             </Grid>
             <Grid Grid.Row="6">
                 <Grid.ColumnDefinitions>

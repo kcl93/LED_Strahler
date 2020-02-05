@@ -25,8 +25,6 @@ namespace LED_Strahler_GUI
 
         #region Properties
 
-        public LED_Strahler_Serial Serial { get; set; } = null;
-
         private LEDGroupControl GUI { get; set; } = null;
 
         /// <summary>
@@ -144,6 +142,10 @@ namespace LED_Strahler_GUI
                     }
                     _HueMinValue = value;
                     NotifyPropertyChanged();
+                    if(this.GUI.RB_FadeButton.IsChecked == true)
+                    {
+                        DoLiveControlUpdate();
+                    }
                 }
             }
         }
@@ -187,6 +189,10 @@ namespace LED_Strahler_GUI
                     }
                     _SaturationMinValue = value;
                     NotifyPropertyChanged();
+                    if (this.GUI.RB_FadeButton.IsChecked == true)
+                    {
+                        DoLiveControlUpdate();
+                    }
                 }
             }
         }
@@ -230,6 +236,10 @@ namespace LED_Strahler_GUI
                     }
                     _ValueMinValue = value;
                     NotifyPropertyChanged();
+                    if (this.GUI.RB_FadeButton.IsChecked == true)
+                    {
+                        DoLiveControlUpdate();
+                    }
                 }
             }
         }
@@ -263,7 +273,7 @@ namespace LED_Strahler_GUI
         public ushort BrightnessValue
         {
             get { return _BrightnessValue; }
-            set { _BrightnessValue = value; NotifyPropertyChanged(); this.DoLiveControlUpdate(); }
+            set { _BrightnessValue = value; NotifyPropertyChanged(); DoLiveControlUpdate(); }
         }
 
         /// <summary>
@@ -273,7 +283,15 @@ namespace LED_Strahler_GUI
         public ushort PeriodValue
         {
             get { return _PeriodValue; }
-            set { _PeriodValue = value; NotifyPropertyChanged(); }
+            set
+            {
+                _PeriodValue = value;
+                NotifyPropertyChanged();
+                if (this.GUI.RB_SetButton.IsChecked == false) //If the set button is not checked, the fade or strobe ones must be
+                {
+                    DoLiveControlUpdate();
+                }
+            }
         }
 
         /// <summary>
@@ -300,6 +318,7 @@ namespace LED_Strahler_GUI
                 if (_LiveControl || _MusicControl || _CandleMode)
                 {
                     EnableButtons = false;
+                    DoLiveControlUpdate();
                 }
                 else
                 {
@@ -413,7 +432,7 @@ namespace LED_Strahler_GUI
             ushort Red = Convert.ToUInt16((double)this.RedValue * BrightnessScaling);
             ushort Green = Convert.ToUInt16((double)this.GreenValue * BrightnessScaling);
             ushort Blue = Convert.ToUInt16((double)this.BlueValue * BrightnessScaling);
-            Serial.SetRGB(this.GroupID, Red, Green, Blue);
+            LEDStrahlerSerial.SetRGB(this.GroupID, Red, Green, Blue);
         }
 
         public void StrobeButtonClick(object sender, RoutedEventArgs e)
@@ -424,7 +443,7 @@ namespace LED_Strahler_GUI
             ushort Blue = Convert.ToUInt16((double)this.BlueValue * BrightnessScaling);
             byte Period = Convert.ToByte(Math.Pow((double)this.PeriodValue / 257, 2) / 255);
             byte StrobeCount = Convert.ToByte(Math.Pow((double)this.StrobeCountValue / 257, 1.5) / Math.Pow(255, 0.5));
-            Serial.StrobeRGB(this.GroupID, Period, StrobeCount, Red, Green, Blue);
+            LEDStrahlerSerial.StrobeRGB(this.GroupID, Period, StrobeCount, Red, Green, Blue);
         }
 
         public void FadeButtonClick(object sender, RoutedEventArgs e)
@@ -434,18 +453,18 @@ namespace LED_Strahler_GUI
             if (this.GUI.RB_Hue.IsChecked == true)
             {
                 ushort Value = Convert.ToUInt16((double)this.ValueMaxValue * BrightnessScaling);
-                Serial.FadeHue(this.GroupID, Period, this.HueMinValue, this.HueMaxValue, this.SaturationMaxValue, Value);
+                LEDStrahlerSerial.FadeHue(this.GroupID, Period, this.HueMinValue, this.HueMaxValue, this.SaturationMaxValue, Value);
             }
             else if (this.GUI.RB_Saturation.IsChecked == true)
             {
                 ushort Value = Convert.ToUInt16((double)this.ValueMaxValue * BrightnessScaling);
-                Serial.FadeSaturation(this.GroupID, Period, this.HueMaxValue, this.SaturationMinValue, this.SaturationMaxValue, Value);
+                LEDStrahlerSerial.FadeSaturation(this.GroupID, Period, this.HueMaxValue, this.SaturationMinValue, this.SaturationMaxValue, Value);
             }
             else if (this.GUI.RB_Value.IsChecked == true)
             {
                 ushort ValueMax = Convert.ToUInt16((double)this.ValueMaxValue * BrightnessScaling);
                 ushort ValueMin = Convert.ToUInt16((double)this.ValueMinValue * BrightnessScaling);
-                Serial.FadeValue(this.GroupID, Period, this.HueMaxValue, this.SaturationMaxValue, ValueMin, ValueMax);
+                LEDStrahlerSerial.FadeValue(this.GroupID, Period, this.HueMaxValue, this.SaturationMaxValue, ValueMin, ValueMax);
             }
         }
 

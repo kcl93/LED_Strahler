@@ -89,10 +89,10 @@
       <DependentUpon>LEDGroupControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="LEDGroupControl_Backend.cs" />
-    <Compile Include="LED_Strahler.cs" />
-    <Compile Include="LED_Strahler_Backend.cs" />
+    <Compile Include="LEDStrahler.cs" />
+    <Compile Include="LEDStrahlerBackend.cs" />
     <Compile Include="Commands.cs" />
-    <Compile Include="LED_Strahler_Serial.cs" />
+    <Compile Include="LEDStrahlerSerial.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

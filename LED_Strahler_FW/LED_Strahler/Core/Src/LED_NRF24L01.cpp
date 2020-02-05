@@ -71,6 +71,7 @@ void LED_NRF24L01_Init(void)
 	//Calculate own unique address
 	OwnAddress = rc_crc32(0, timestamp, 20);	//Calculate own address
 	OwnAddress = 0x11111111;
+	//OwnAddress = 0x22222222;
 }
 
 
@@ -368,13 +369,16 @@ inline void Exec_FadeValue(struct NRF24L01_FadeValue &packet)
 
 inline void Exec_GetTempertaure(struct NRF24L01_GetTemperature &packet)
 {
-	((struct NRF24L01_GetTemperatureAnswer*)&packet)->CMD = CMD_GETTEMPERATUREANSWER;
-	((struct NRF24L01_GetTemperatureAnswer*)&packet)->LED_Temperature = LED_Thermomodel_GetTemp();
-	//Wait for 2ms to be sure that the base is able to receive data
-	HAL_Delay(2);
-	//Transmit answer once
-	LED_NRF24L01_Send((uint8_t*)&packet);
-	LED_NRF24L01_WaitTx(5);
-	NRF24L01_PowerUpRx();
+	if(packet.SlaveAddress == OwnAddress)
+	{
+		((struct NRF24L01_GetTemperatureAnswer*)&packet)->CMD = CMD_GETTEMPERATUREANSWER;
+		((struct NRF24L01_GetTemperatureAnswer*)&packet)->LED_Temperature = LED_Thermomodel_GetTemp();
+		//Wait for 2ms to be sure that the base is able to receive data
+		HAL_Delay(2);
+		//Transmit answer once
+		LED_NRF24L01_Send((uint8_t*)&packet);
+		LED_NRF24L01_WaitTx(5);
+		NRF24L01_PowerUpRx();
+	}
 }
 

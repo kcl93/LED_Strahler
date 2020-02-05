@@ -34,12 +34,12 @@ namespace LED_Strahler_GUI
             }
         #endregion
 
-        private LED_Strahler_Backend Backend = null;
+        private LEDStrahlerBackend Backend = null;
 
         #region Properties
 
-        private List<LED_Strahler> _DeviceList = new List<LED_Strahler>();
-        public List<LED_Strahler> DeviceList
+        private List<LEDStrahler> _DeviceList = new List<LEDStrahler>();
+        public List<LEDStrahler> DeviceList
         {
             get { return _DeviceList; }
             set { _DeviceList = value; NotifyPropertyChanged(); }
@@ -60,7 +60,8 @@ namespace LED_Strahler_GUI
         {
             InitializeComponent();
 
-            Backend = new LED_Strahler_Backend(this);
+            //Create Backend
+            this.Backend = new LEDStrahlerBackend(this);
         }
 
         #endregion
@@ -85,7 +86,7 @@ namespace LED_Strahler_GUI
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            return value.ToString() + "°C";
+            return ((double)value).ToString("F1") + "°C";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

@@ -7,7 +7,7 @@
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
 
-    public class LED_Strahler : INotifyPropertyChanged
+    public class LEDStrahler : INotifyPropertyChanged
     {
         #region Property changed
         public event PropertyChangedEventHandler PropertyChanged;
@@ -20,8 +20,6 @@
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
-
-        public LED_Strahler_Serial Serial { get; set; } = new LED_Strahler_Serial();
 
         #region Properties
 
@@ -41,7 +39,7 @@
                 if(value != _Group)
                 {
                     _Group = value;
-                    Serial.SetGroup((byte)value, this.UUID);
+                    LEDStrahlerSerial.SetGroup((byte)value, this.UUID);
                     NotifyPropertyChanged();
                 }
             }
@@ -73,7 +71,7 @@
         #endregion
 
         #region Constructor
-        public LED_Strahler(uint ID)
+        public LEDStrahler(uint ID)
         {
             this.UUID = ID;
         }

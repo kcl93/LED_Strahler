@@ -5,21 +5,26 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Windows;
+using System.Windows.Controls;
+using System.ComponentModel;
 
 namespace LED_Strahler_GUI
 {
-    public class LED_Strahler_Backend
+    public class LEDStrahlerBackend
     {
 
         private readonly MainWindow GUI = null;
-        private readonly LED_Strahler_Serial Serial = new LED_Strahler_Serial();
 
         #region Constructor
 
-        public LED_Strahler_Backend(MainWindow _gui)
+        public LEDStrahlerBackend(MainWindow _gui)
         {
             GUI = _gui;
 
+            //Link shutdown event
+            this.GUI.Closing += new CancelEventHandler(this.GUIClosing);
+
+            //Get available serial ports
             GUI.ComPortList = new List<string>(SerialPort.GetPortNames());
             if(GUI.ComPortList.Count() != 0)
             {
@@ -27,12 +32,7 @@ namespace LED_Strahler_GUI
             }
 
             //Connect serial port to all GroupControls
-            this.GUI.GroupControl0.Backend.Serial = this.Serial;
-            this.GUI.GroupControl1.Backend.Serial = this.Serial;
-            this.GUI.GroupControl2.Backend.Serial = this.Serial;
-            this.GUI.GroupControl3.Backend.Serial = this.Serial;
-            this.GUI.GroupControl4.Backend.Serial = this.Serial;
-            this.GUI.GroupControl5.Backend.Serial = this.Serial;
+            LEDStrahlerSerial.StartDispatcher();
 
             //Link Buttons
             this.GUI.ConnectRefreshButton.Click += this.ConnectRefreshButtonClick;
@@ -43,30 +43,34 @@ namespace LED_Strahler_GUI
 
         #region methods
 
+        public void GUIClosing(object sender, CancelEventArgs e)
+        {
+            LEDStrahlerSerial.ShutdownDispatcher();
+        }
+
         public void ConnectRefreshButtonClick(object sender, RoutedEventArgs e)
         {
             //Open serial port
             if(this.GUI.ComPort.Text != null)
             {
-                this.Serial.Open(this.GUI.ComPort.Text);
+                LEDStrahlerSerial.Open(this.GUI.ComPort.Text);
             }
 
             //Ping for devices
-            this.Serial.PingRequest(out List<uint> UUIDs);
+            LEDStrahlerSerial.PingRequest(out List<uint> UUIDs);
 
             //Setup new device list
-            List<LED_Strahler> DeviceList = new List<LED_Strahler>();
+            List<LEDStrahler> DeviceList = new List<LEDStrahler>();
             foreach (uint UUID in UUIDs)
             {
-                DeviceList.Add(new LED_Strahler(UUID));
-                DeviceList[DeviceList.Count() - 1].Serial = this.Serial;
+                DeviceList.Add(new LEDStrahler(UUID));
             }
             this.GUI.DeviceList = DeviceList;
 
             //Read all temperatures once
-            foreach (LED_Strahler Strahler in this.GUI.DeviceList)
+            foreach (LEDStrahler Strahler in this.GUI.DeviceList)
             {
-                this.Serial.GetTemperature(Strahler);
+                LEDStrahlerSerial.GetTemperature(Strahler);
             }
 
             this.GUI.DeviceGrid.IsEnabled = true;
@@ -74,9 +78,9 @@ namespace LED_Strahler_GUI
 
         public void GetTemperatureButtonClick(object sender, RoutedEventArgs e)
         {
-            foreach (LED_Strahler Strahler in this.GUI.DeviceList)
+            foreach (LEDStrahler Strahler in this.GUI.DeviceList)
             {
-                this.Serial.GetTemperature(Strahler);
+                LEDStrahlerSerial.GetTemperature(Strahler);
             }
         }
 
