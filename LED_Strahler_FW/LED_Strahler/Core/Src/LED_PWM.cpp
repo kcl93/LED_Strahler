@@ -66,12 +66,12 @@ void LED_PWM_SetRGBW(uint16_t red, uint16_t green, uint16_t blue, uint16_t white
 	_led_blue = blue;
 	_led_white = white;
 
-	#if RGBW_LED
+	#ifdef RGBW_LED
 		LED_PWM_SetPWM_TIM(LED_R_CH_SLOW, LED_R_CH_FAST, red);
 		LED_PWM_SetPWM_TIM(LED_G_CH_SLOW, LED_G_CH_FAST, green);
 		LED_PWM_SetPWM_TIM(LED_B_CH_SLOW, LED_B_CH_FAST, blue);
 		LED_PWM_SetPWM_TIM(LED_W_CH_SLOW, LED_W_CH_FAST, white);
-	#else
+	#else //RGB_LED
 		LED_PWM_SetPWM_TIM(LED_R_CH_SLOW, LED_R_CH_FAST, blue);
 		LED_PWM_SetPWM_TIM(LED_G_CH_SLOW, LED_G_CH_FAST, green);
 		LED_PWM_SetPWM_TIM(LED_B_CH_SLOW, LED_B_CH_FAST, red);
@@ -82,7 +82,7 @@ void LED_PWM_SetRGBW(uint16_t red, uint16_t green, uint16_t blue, uint16_t white
 
 void LED_PWM_SetPWM_TIM(uint32_t channel_slow, uint32_t channel_fast, uint16_t value)
 {
-	uint16_t val_Slow = 65535; //Translates to 100%
+	uint16_t val_Slow = 0; //Translates to 100%
 	uint16_t val_Fast = 0; //Translates to 0%
 
 	if(PWMboost == 0) // Limit max. output current while not boosting
@@ -90,14 +90,20 @@ void LED_PWM_SetPWM_TIM(uint32_t channel_slow, uint32_t channel_fast, uint16_t v
 		value = (value * LED_PWM_STD_PEAK_CURRENT) / LED_PWM_BOOST_PEAK_CURRENT;
 	}
 
-	if(value >= ((65535 * LED_PWM_ANALOG_MIN_CURRENT) / LED_PWM_BOOST_PEAK_CURRENT))
-	{ //Only analog dimming
-		val_Fast = MapRounded(value, 0, 65535, (1000*LED_PWM_ANALOG_VOLT_MIN)/3300, (1000*LED_PWM_ANALOG_VOLT_MAX)/3300);
-	}
-	else
-	{ //Mixed analog and PWM dimming
-		val_Fast = MapRounded(((65535 * LED_PWM_ANALOG_MIN_CURRENT) / LED_PWM_BOOST_PEAK_CURRENT), 0, 65535, (1000*LED_PWM_ANALOG_VOLT_MIN)/3300, (1000*LED_PWM_ANALOG_VOLT_MAX)/3300);
-		val_Slow = MapRounded(value, 0, ((65535 * LED_PWM_ANALOG_MIN_CURRENT) / LED_PWM_BOOST_PEAK_CURRENT), 0, 65535);
+	//Only calculate if value > 0
+	if(value > 0)
+	{
+		//Calculate fast dimming
+		val_Fast = value;
+		if(value < ((65535 * LED_PWM_ANALOG_MIN_CURRENT) / LED_PWM_BOOST_PEAK_CURRENT))
+		{
+			val_Fast = (65535 * LED_PWM_ANALOG_MIN_CURRENT) / LED_PWM_BOOST_PEAK_CURRENT;
+		}
+		value = val_Fast - value;
+		val_Fast = MapRounded(val_Fast, 0, 65535, 0*(1000*LED_PWM_ANALOG_VOLT_MIN)/SUPPLY_VOLTAGE, (1000*LED_PWM_ANALOG_VOLT_MAX)/3300);
+
+		//Calculate slow dimming
+		val_Slow = MapRounded(value, 0, (65535 * LED_PWM_ANALOG_MIN_CURRENT) / LED_PWM_BOOST_PEAK_CURRENT, 65535, 0);
 	}
 
 	__HAL_TIM_SET_COMPARE(&LED_PWM_FAST_TIMER, channel_fast, val_Fast);
@@ -186,5 +192,5 @@ void LED_PWM_SetSlowPWM(uint16_t red, uint16_t green, uint16_t blue, uint16_t wh
 
 inline uint16_t MapRounded(uint16_t x, uint16_t in_min, uint16_t in_max, uint16_t out_min, uint16_t out_max)
 {
-	return (uint16_t)(((uint32_t)(x - in_min) * (uint32_t)(out_max - out_min) + (uint32_t)((in_max - in_min) >> 1)) / (uint32_t)(in_max - in_min)) + out_min;
+	return (uint16_t)(((int32_t)(x - in_min) * (int32_t)(out_max - out_min) + (int32_t)((in_max - in_min) >> 1)) / (int32_t)(in_max - in_min)) + out_min;
 }

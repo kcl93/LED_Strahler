@@ -15,8 +15,8 @@
 
 #define STROBE_ACTIVE_TICKS			2
 
-//#define RGBW_LED
-#define RGB_LED
+#define RGBW_LED
+//#define RGB_LED
 
 
 

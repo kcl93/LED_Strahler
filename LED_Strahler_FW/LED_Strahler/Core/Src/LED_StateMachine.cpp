@@ -177,21 +177,21 @@ void LED_StateMachine_Handle(void)
 
 void LED_CopyRGB(uint16_t red, uint16_t green, uint16_t blue)
 {
-	#if defined(RGBW_LED)
-		LED_White = LED_Red;
-		if(LED_Green < LED_White)
+	#ifdef RGBW_LED
+		LED_White = red;
+		if(green < LED_White)
 		{
-			LED_White = LED_Green;
+			LED_White = green;
 		}
-		if(LED_Blue < LED_White)
+		if(blue < LED_White)
 		{
-			LED_White = LED_Blue;
+			LED_White = blue;
 		}
 
-		LED_Red   -= LED_White;
-		LED_Green -= LED_White;
-		LED_Blue  -= LED_White;
-	#elif defined(RGB_LED)
+		LED_Red   = red - LED_White;
+		LED_Green = green - LED_White;
+		LED_Blue  = blue - LED_White;
+	#else //RGB LED
 		LED_Red = red;
 		LED_Green = green;
 		LED_Blue = blue;
@@ -202,12 +202,12 @@ void LED_CopyRGB(uint16_t red, uint16_t green, uint16_t blue)
 
 inline void LED_CopyRGBW(uint16_t red, uint16_t green, uint16_t blue, uint16_t white)
 {
-	#if defined(RGBW_LED)
+	#ifdef RGBW_LED
 		LED_Red = red;
 		LED_Green = green;
 		LED_Blue = blue;
 		LED_White = white;
-	#elif defined(RGB_LED)
+	#else //RGB_LED
 		LED_Red = ((((uint32_t)red) + (uint32_t)white) >> 1);
 		LED_Green = ((((uint32_t)green) + (uint32_t)white) >> 1);
 		LED_Blue = ((((uint32_t)blue) + (uint32_t)white) >> 1);
