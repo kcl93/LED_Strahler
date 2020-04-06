@@ -92,6 +92,7 @@
     <Compile Include="LEDStrahler.cs" />
     <Compile Include="LEDStrahlerBackend.cs" />
     <Compile Include="Commands.cs" />
+    <Compile Include="LEDStrahlerBackendLightShowFunctions.cs" />
     <Compile Include="LEDStrahlerSerial.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

@@ -28,6 +28,7 @@ private:
 	uint8_t cmd_buf_index;
 	NRF24L01_DataPacket cmd;
 	bool cmd_available;
+	uint32_t address;
 
 	void Decode(void);
 
@@ -36,7 +37,7 @@ public:
 
 	void Parse(void);
 	bool Available(void);
-	void ReadCMD(NRF24L01_DataPacket *_cmd);
+	void ReadCMD(NRF24L01_DataPacket *_cmd, uint32_t *_address);
 };
 
 

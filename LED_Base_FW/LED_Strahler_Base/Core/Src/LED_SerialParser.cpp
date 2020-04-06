@@ -22,6 +22,7 @@ LED_SerialParser::LED_SerialParser(USART_Handler *_uart)
 		this->cmd_buf[i] = 0x00;
 	}
 	this->cmd_buf_index = 0;
+	this->address = 0;
 }
 
 
@@ -71,11 +72,11 @@ void LED_SerialParser::Parse(void)
 void LED_SerialParser::Decode(void)
 {
 	uint8_t ret = 0;
-	unsigned int u32Tmp[8] = {0};
+	unsigned int u32Tmp[9] = {0};
 	this->cmd = {0};
 
 	//Get command
-	ret = sscanf(this->cmd_buf, "G%u %u %u %u %u %u %u %u", &u32Tmp[0], &u32Tmp[1], &u32Tmp[2], &u32Tmp[3], &u32Tmp[4], &u32Tmp[5], &u32Tmp[6], &u32Tmp[7]);
+	ret = sscanf(this->cmd_buf, "G%u %u %u %u %u %u %u %u %u", &u32Tmp[0], &u32Tmp[1], &u32Tmp[2], &u32Tmp[3], &u32Tmp[4], &u32Tmp[5], &u32Tmp[6], &u32Tmp[7], &u32Tmp[8]);
 	if(ret == 0)
 	{
 		return; //Could not fetch command!
@@ -89,9 +90,17 @@ void LED_SerialParser::Decode(void)
 			break; //Nothing to do
 
 		case CMD_SETGROUP:
-			if(ret != 3)
+			if(ret == 4)
 			{
-				return; //Error fetching command
+				this->address = u32Tmp[3];
+			}
+			else
+			{
+				this->address = LED_NRF24L01_BROADCAST_ADDR;
+				if(ret != 3)
+				{
+					return; //Error fetching command
+				}
 			}
 			this->cmd.SetGroup.SlaveAddress = u32Tmp[1];
 			this->cmd.SetGroup.GroupID = (uint8_t)u32Tmp[2];
@@ -107,9 +116,17 @@ void LED_SerialParser::Decode(void)
 			break;*/
 
 		case CMD_SETRGB:
-			if(ret != 5)
+			if(ret == 6)
 			{
-				return; //Error fetching command
+				this->address = u32Tmp[5];
+			}
+			else
+			{
+				this->address = LED_NRF24L01_BROADCAST_ADDR;
+				if(ret != 5)
+				{
+					return; //Error fetching command
+				}
 			}
 			this->cmd.SetRGB.GroupID = (uint8_t)u32Tmp[1];
 			this->cmd.SetRGB.Red = (uint16_t)u32Tmp[2];
@@ -118,9 +135,17 @@ void LED_SerialParser::Decode(void)
 			break;
 
 		case CMD_SETRGBW:
-			if(ret != 6)
+			if(ret == 7)
 			{
-				return; //Error fetching command
+				this->address = u32Tmp[6];
+			}
+			else
+			{
+				this->address = LED_NRF24L01_BROADCAST_ADDR;
+				if(ret != 6)
+				{
+					return; //Error fetching command
+				}
 			}
 			this->cmd.SetRGBW.GroupID = (uint8_t)u32Tmp[1];
 			this->cmd.SetRGBW.Red = (uint16_t)u32Tmp[2];
@@ -130,9 +155,17 @@ void LED_SerialParser::Decode(void)
 			break;
 
 		case CMD_SETHSV:
-			if(ret != 5)
+			if(ret == 6)
 			{
-				return; //Error fetching command
+				this->address = u32Tmp[5];
+			}
+			else
+			{
+				this->address = LED_NRF24L01_BROADCAST_ADDR;
+				if(ret != 5)
+				{
+					return; //Error fetching command
+				}
 			}
 			this->cmd.SetHSV.GroupID = (uint8_t)u32Tmp[1];
 			this->cmd.SetHSV.Hue = (uint16_t)u32Tmp[2];
@@ -141,9 +174,17 @@ void LED_SerialParser::Decode(void)
 			break;
 
 		case CMD_STROBERGB:
-			if(ret != 7)
+			if(ret == 8)
 			{
-				return; //Error fetching command
+				this->address = u32Tmp[7];
+			}
+			else
+			{
+				this->address = LED_NRF24L01_BROADCAST_ADDR;
+				if(ret != 7)
+				{
+					return; //Error fetching command
+				}
 			}
 			this->cmd.StrobeRGB.GroupID = (uint8_t)u32Tmp[1];
 			this->cmd.StrobeRGB.Period = (uint8_t)u32Tmp[2];
@@ -154,9 +195,17 @@ void LED_SerialParser::Decode(void)
 			break;
 
 		case CMD_STROBERGBW:
-			if(ret != 8)
+			if(ret == 9)
 			{
-				return; //Error fetching command
+				this->address = u32Tmp[8];
+			}
+			else
+			{
+				this->address = LED_NRF24L01_BROADCAST_ADDR;
+				if(ret != 8)
+				{
+					return; //Error fetching command
+				}
 			}
 			this->cmd.StrobeRGBW.GroupID = (uint8_t)u32Tmp[1];
 			this->cmd.StrobeRGBW.Period = (uint8_t)u32Tmp[2];
@@ -168,9 +217,17 @@ void LED_SerialParser::Decode(void)
 			break;
 
 		case CMD_STROBEHSV:
-			if(ret != 7)
+			if(ret == 8)
 			{
-				return; //Error fetching command
+				this->address = u32Tmp[7];
+			}
+			else
+			{
+				this->address = LED_NRF24L01_BROADCAST_ADDR;
+				if(ret != 7)
+				{
+					return; //Error fetching command
+				}
 			}
 			this->cmd.StrobeHSV.GroupID = (uint8_t)u32Tmp[1];
 			this->cmd.StrobeHSV.Period = (uint8_t)u32Tmp[2];
@@ -181,9 +238,17 @@ void LED_SerialParser::Decode(void)
 			break;
 
 		case CMD_FADEHUE:
-			if(ret != 7)
+			if(ret == 8)
 			{
-				return; //Error fetching command
+				this->address = u32Tmp[7];
+			}
+			else
+			{
+				this->address = LED_NRF24L01_BROADCAST_ADDR;
+				if(ret != 7)
+				{
+					return; //Error fetching command
+				}
 			}
 			this->cmd.FadeHue.GroupID = (uint8_t)u32Tmp[1];
 			this->cmd.FadeHue.Period = (uint16_t)u32Tmp[2];
@@ -194,9 +259,17 @@ void LED_SerialParser::Decode(void)
 			break;
 
 		case CMD_FADESATURATION:
-			if(ret != 7)
+			if(ret == 8)
 			{
-				return; //Error fetching command
+				this->address = u32Tmp[7];
+			}
+			else
+			{
+				this->address = LED_NRF24L01_BROADCAST_ADDR;
+				if(ret != 7)
+				{
+					return; //Error fetching command
+				}
 			}
 			this->cmd.FadeSaturation.GroupID = (uint8_t)u32Tmp[1];
 			this->cmd.FadeSaturation.Period = (uint16_t)u32Tmp[2];
@@ -207,9 +280,17 @@ void LED_SerialParser::Decode(void)
 			break;
 
 		case CMD_FADEVALUE:
-			if(ret != 7)
+			if(ret == 8)
 			{
-				return; //Error fetching command
+				this->address = u32Tmp[7];
+			}
+			else
+			{
+				this->address = LED_NRF24L01_BROADCAST_ADDR;
+				if(ret != 7)
+				{
+					return; //Error fetching command
+				}
 			}
 			this->cmd.FadeValue.GroupID = (uint8_t)u32Tmp[1];
 			this->cmd.FadeValue.Period = (uint16_t)u32Tmp[2];
@@ -220,9 +301,17 @@ void LED_SerialParser::Decode(void)
 			break;
 
 		case CMD_GETTEMPERATURE:
-			if(ret != 2)
+			if(ret == 3)
 			{
-				return; //Error fetching command
+				this->address = u32Tmp[2];
+			}
+			else
+			{
+				this->address = LED_NRF24L01_BROADCAST_ADDR;
+				if(ret != 2)
+				{
+					return; //Error fetching command
+				}
 			}
 			this->cmd.GetTemperature.SlaveAddress = u32Tmp[1];
 			break; //Nothing to do
@@ -242,8 +331,9 @@ bool LED_SerialParser::Available(void)
 }
 
 
-void LED_SerialParser::ReadCMD(NRF24L01_DataPacket *_cmd)
+void LED_SerialParser::ReadCMD(NRF24L01_DataPacket *_cmd, uint32_t *_address)
 {
 	*_cmd = this->cmd; //Copy data
+	*_address = this->address;
 	this->cmd_available = false;
 }

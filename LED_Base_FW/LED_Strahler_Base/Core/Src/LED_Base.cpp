@@ -47,6 +47,7 @@ void LED_Base_Setup(void)
 void LED_Base_Handle(void)
 {
 	NRF24L01_DataPacket cmd = {0};
+	uint32_t address = 0;
 	cmd.CMD = CMD_IGNORE;
 
 	//Parse inputs for new data
@@ -56,11 +57,11 @@ void LED_Base_Handle(void)
 	//Check for new data
 	if(BT_parser->Available() == true)
 	{
-		BT_parser->ReadCMD(&cmd);
+		BT_parser->ReadCMD(&cmd, &address);
 	}
 	else if(PC_parser->Available() == true)
 	{
-		PC_parser->ReadCMD(&cmd);
+		PC_parser->ReadCMD(&cmd, &address);
 	}
 
 	//Check IRQ pin
@@ -78,7 +79,7 @@ void LED_Base_Handle(void)
 			sync_time = HAL_GetTick();
 			cmd.SetTimebase.CMD = CMD_SETTIMEBASE;
 			cmd.SetTimebase.Timebase = sync_time;
-			LED_NRF24L01_Send(cmd.Data);
+			LED_NRF24L01_Send(cmd.Data, LED_NRF24L01_BROADCAST_ADDR);
 		}
 		return;
 	}
@@ -95,7 +96,7 @@ void LED_Base_Handle(void)
 		break;
 
 	default:
-		LED_NRF24L01_Send(cmd.Data);
+		LED_NRF24L01_Send(cmd.Data, address);
 		break;
 	}
 }
@@ -108,7 +109,7 @@ inline void ExecPingRequest(NRF24L01_DataPacket *cmd)
 	char buf[16];
 
 	cmd->CMD = CMD_PINGREQUEST;
-	LED_NRF24L01_Send(cmd->Data); //Ping all slaves to see which are present
+	LED_NRF24L01_Send(cmd->Data, LED_NRF24L01_BROADCAST_ADDR); //Ping all slaves to see which are present
 
 	//Wait for transfer to finish or timeout
 	LED_NRF24L01_WaitTx(5);
@@ -164,7 +165,7 @@ inline void ExecGetTemperature(NRF24L01_DataPacket *cmd)
 	char buf[16];
 
 	cmd->CMD = CMD_GETTEMPERATURE;
-	LED_NRF24L01_Send(cmd->Data); //Ask for temperature
+	LED_NRF24L01_Send(cmd->Data, LED_NRF24L01_BROADCAST_ADDR); //Ask for temperature
 
 	//Wait for transfer to finish or timeout
 	LED_NRF24L01_WaitTx(5);

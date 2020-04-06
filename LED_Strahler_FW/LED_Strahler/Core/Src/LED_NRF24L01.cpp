@@ -58,20 +58,24 @@ void LED_NRF24L01_Init(void)
 	NRF24L01_SetRF(LED_NRF24L01_DATARATE, LED_NRF24L01_OUTPUT_POWER); /* Set RF settings */
 
 	NRF24L01_CE_LOW;
+
 	OwnAddress = LED_NRF24L01_BASE_ADDR;
 	NRF24L01_WriteRegisterMulti(NRF24L01_REG_TX_ADDR, (uint8_t*)&OwnAddress, 4);	//Setup transmit address
+
 	OwnAddress = LED_NRF24L01_BROADCAST_ADDR;	//Setup pipe 0 for RX
 	NRF24L01_WriteRegisterMulti(NRF24L01_REG_RX_ADDR_P0, (uint8_t*)&OwnAddress, 4); //Store main broadcast receive address
-	//NRF24L01_WriteRegisterMulti(NRF24L01_REG_RX_ADDR_P1, (uint8_t*)&OwnAddress, 4); //Store main broadcast receive address
+
+	//Calculate own unique address
+	//OwnAddress = rc_crc32(0, timestamp, 20);	//Calculate own address
+	OwnAddress = 0x11111111;
+	//OwnAddress = 0x22222222;
+
+	NRF24L01_WriteRegisterMulti(NRF24L01_REG_RX_ADDR_P1, (uint8_t*)&OwnAddress, 4); //Store own receive address
+
 	NRF24L01_CE_HIGH;
 
 	/* Go to RX mode */
 	NRF24L01_PowerUpRx();
-
-	//Calculate own unique address
-	OwnAddress = rc_crc32(0, timestamp, 20);	//Calculate own address
-	OwnAddress = 0x11111111;
-	//OwnAddress = 0x22222222;
 }
 
 

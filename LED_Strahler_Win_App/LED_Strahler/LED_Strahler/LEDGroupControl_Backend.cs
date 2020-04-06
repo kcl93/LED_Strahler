@@ -305,70 +305,53 @@ namespace LED_Strahler_GUI
         }
 
         /// <summary>
-        /// Live control checkbox value
+        /// Static control radiobutton value
+        /// </summary>
+        private bool _StaticControl = true;
+        public bool StaticControl
+        {
+            get { return _StaticControl; }
+            set { _StaticControl = value; NotifyPropertyChanged(); }
+        }
+
+        /// <summary>
+        /// Live control radiobutton value
         /// </summary>
         private bool _LiveControl = false;
         public bool LiveControl
         {
             get { return _LiveControl; }
-            set
-            {
-                _LiveControl = value;
-                NotifyPropertyChanged();
-                if (_LiveControl || _MusicControl || _CandleMode)
-                {
-                    EnableButtons = false;
-                    DoLiveControlUpdate();
-                }
-                else
-                {
-                    EnableButtons = true;
-                }
-            }
+            set { _LiveControl = value; NotifyPropertyChanged(); }
         }
 
         /// <summary>
-        /// Music control checkbox value
+        /// Music control radiobutton value
         /// </summary>
         private bool _MusicControl = false;
         public bool MusicControl
         {
             get { return _MusicControl; }
-            set
-            {
-                _MusicControl = value;
-                NotifyPropertyChanged();
-                if (_LiveControl || _MusicControl || _CandleMode)
-                {
-                    EnableButtons = false;
-                }
-                else
-                {
-                    EnableButtons = true;
-                }
-            }
+            set { _MusicControl = value; NotifyPropertyChanged(); }
         }
 
         /// <summary>
-        /// Candle mode checkbox value
+        /// LJ mode radiobutton value
+        /// </summary>
+        private bool _LJMode = false;
+        public bool LJMode
+        {
+            get { return _LJMode; }
+            set { _LJMode = value; NotifyPropertyChanged(); }
+        }
+
+        /// <summary>
+        /// Candle mode radiobutton value
         /// </summary>
         private bool _CandleMode = false;
         public bool CandleMode
         {
             get { return _CandleMode; }
-            set
-            {
-                _CandleMode = value;
-                NotifyPropertyChanged();
-                if (_LiveControl || _MusicControl || _CandleMode)
-                {
-                    EnableButtons = false;
-                }
-                else
-                {
-                    EnableButtons = true;
-                }
-            }
+            set { _CandleMode = value; NotifyPropertyChanged(); }
         }
 
         /// <summary>

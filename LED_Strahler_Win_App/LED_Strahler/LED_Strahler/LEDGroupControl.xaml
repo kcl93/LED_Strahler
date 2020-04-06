@@ -72,11 +72,11 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Button Grid.Row="0" Grid.Column="0" Name="SetButton" Content="Set" Height="24px" Margin="5px" Width="100px" IsEnabled="{Binding EnableButtons}"/>
+                <Button Grid.Row="0" Grid.Column="0" Name="SetButton" Content="Set" Height="24px" Margin="5px" Width="100px" IsEnabled="{Binding StaticControl}"/>
                 <RadioButton Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="RB_SetButton" IsChecked="True"/>
-                <Button Grid.Row="1" Grid.Column="0" Name="FadeButton" Content="Fade" Height="24px" Margin="5px" Width="100px" IsEnabled="{Binding EnableButtons}"/>
+                <Button Grid.Row="1" Grid.Column="0" Name="FadeButton" Content="Fade" Height="24px" Margin="5px" Width="100px" IsEnabled="{Binding StaticControl}"/>
                 <RadioButton Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="RB_FadeButton"/>
-                <Button Grid.Row="2" Grid.Column="0" Name="StrobeButton" Content="Strobe" Height="24px" Margin="5px" Width="100px" IsEnabled="{Binding EnableButtons}"/>
+                <Button Grid.Row="2" Grid.Column="0" Name="StrobeButton" Content="Strobe" Height="24px" Margin="5px" Width="100px" IsEnabled="{Binding StaticControl}"/>
                 <RadioButton Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="RB_StrobeButton" />
             </Grid>
             <Grid Grid.Row="8">
@@ -88,13 +88,19 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Label Grid.Row="0" Grid.Column="0" Content="Live control:"/>
-                <CheckBox Grid.Row="0" Grid.Column="1" Name="CB_LiveControl" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding LiveControl}"/>
-                <Label Grid.Row="1" Grid.Column="0" Content="Music control:"/>
-                <CheckBox Grid.Row="1" Grid.Column="1" Name="CB_MusicControl" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding MusicControl}"/>
-                <Label Grid.Row="2" Grid.Column="0" Content="Candle mode:"/>
-                <CheckBox Grid.Row="2" Grid.Column="1" Name="CB_CandleMode" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding CandleMode}"/>
+                <Label Grid.Row="0" Grid.Column="0" Content="Static control:"/>
+                <RadioButton Grid.Row="0" Grid.Column="1" Name="RB_StaticControl" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding StaticControl}"/>
+                <Label Grid.Row="1" Grid.Column="0" Content="Live control:"/>
+                <RadioButton Grid.Row="1" Grid.Column="1" Name="RB_LiveControl" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding LiveControl}"/>
+                <Label Grid.Row="2" Grid.Column="0" Content="Music control:"/>
+                <RadioButton Grid.Row="2" Grid.Column="1" Name="RB_MusicControl" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding MusicControl}"/>
+                <Label Grid.Row="3" Grid.Column="0" Content="LJ mode:"/>
+                <RadioButton Grid.Row="3" Grid.Column="1" Name="RB_LJMode" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding LJMode}"/>
+                <Label Grid.Row="4" Grid.Column="0" Content="Candle mode:"/>
+                <RadioButton Grid.Row="4" Grid.Column="1" Name="RB_CandleMode" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding CandleMode}"/>
             </Grid>
         </Grid>
     </GroupBox>

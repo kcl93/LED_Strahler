@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LED_Strahler_GUI"
         mc:Ignorable="d"
-        Title="LED Strahler GUI" Height="700" Width="1200"
+        Title="LED Strahler GUI" Height="730" Width="1200"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
         <local:DoubleToStringConverter x:Key="DoubleToStringConverter"/>
@@ -14,7 +14,7 @@
         <local:IntToGroupConverter x:Key="IntToGroupConverter"/>
     </Window.Resources>
     <Grid Name="MainGrid">
-        <TabControl>
+        <TabControl Name="GUITabs">
             <TabItem Name="Control" Header="Control">
                 <Grid>
                     <Grid.ColumnDefinitions>

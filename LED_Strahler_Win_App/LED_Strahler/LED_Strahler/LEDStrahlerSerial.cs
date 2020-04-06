@@ -170,6 +170,11 @@
             }
         }
 
+        public static List<string> ListPorts()
+        {
+            return new List<string>(SerialPort.GetPortNames());
+        }
+
         public static bool Open(string Port)
         {
             bool retVal = false;
@@ -220,9 +225,19 @@
             LEDStrahlerSerial.Write("G" + (int)Commands.SetRGB + " " + GroupID + " " + Red + " " + Green + " " + Blue);
         }
 
+        public static void SetRGB(LEDStrahler Strahler, ushort Red, ushort Green, ushort Blue)
+        {
+            LEDStrahlerSerial.Write("G" + (int)Commands.SetRGB + " 0 " + Red + " " + Green + " " + Blue + " " + Strahler.UUID);
+        }
+
         public static void SetRGBW(byte GroupID, ushort Red, ushort Green, ushort Blue, ushort White)
         {
             LEDStrahlerSerial.Write("G" + (int)Commands.SetRGBW + " " + GroupID + " " + Red + " " + Green + " " + Blue + " " + White);
+        }
+
+        public static void SetRGBW(LEDStrahler Strahler, ushort Red, ushort Green, ushort Blue, ushort White)
+        {
+            LEDStrahlerSerial.Write("G" + (int)Commands.SetRGBW + " 0 " + Red + " " + Green + " " + Blue + " " + White + " " + Strahler.UUID);
         }
 
         public static void SetHSV(byte GroupID, ushort Hue, ushort Saturation, ushort Value)
@@ -230,9 +245,19 @@
             LEDStrahlerSerial.Write("G" + (int)Commands.SetHSV + " " + GroupID + " " + Hue + " " + Saturation + " " + Value);
         }
 
+        public static void SetHSV(LEDStrahler Strahler, ushort Hue, ushort Saturation, ushort Value)
+        {
+            LEDStrahlerSerial.Write("G" + (int)Commands.SetHSV + " 0 " + Hue + " " + Saturation + " " + Value + " " + Strahler.UUID);
+        }
+
         public static void StrobeRGB(byte GroupID, byte Period, byte Count, ushort Red, ushort Green, ushort Blue)
         {
             LEDStrahlerSerial.Write("G" + (int)Commands.StrobeRGB + " " + GroupID + " " + Period + " " + Count + " " + Red + " " + Green + " " + Blue);
+        }
+
+        public static void StrobeRGB(LEDStrahler Strahler, byte Period, byte Count, ushort Red, ushort Green, ushort Blue)
+        {
+            LEDStrahlerSerial.Write("G" + (int)Commands.StrobeRGB + " 0 " + Period + " " + Count + " " + Red + " " + Green + " " + Blue + " " + Strahler.UUID);
         }
 
         public static void StrobeRGBW(byte GroupID, byte Period, byte Count, ushort Red, ushort Green, ushort Blue, ushort White)
@@ -240,9 +265,19 @@
             LEDStrahlerSerial.Write("G" + (int)Commands.StrobeRGBW + " " + GroupID + " " + Period + " " + Count + " " + Red + " " + Green + " " + Blue + " " + White);
         }
 
+        public static void StrobeRGBW(LEDStrahler Strahler, byte Period, byte Count, ushort Red, ushort Green, ushort Blue, ushort White)
+        {
+            LEDStrahlerSerial.Write("G" + (int)Commands.StrobeRGBW + " 0 " + Period + " " + Count + " " + Red + " " + Green + " " + Blue + " " + White + " " + Strahler.UUID);
+        }
+
         public static void StrobeHSV(byte GroupID, byte Period, byte Count, ushort Hue, ushort Saturation, ushort Value)
         {
             LEDStrahlerSerial.Write("G" + (int)Commands.StrobeHSV + " " + GroupID + " " + Period + " " + Count + " " + Hue + " " + Saturation + " " + Value);
+        }
+
+        public static void StrobeHSV(LEDStrahler Strahler, byte Period, byte Count, ushort Hue, ushort Saturation, ushort Value)
+        {
+            LEDStrahlerSerial.Write("G" + (int)Commands.StrobeHSV + " 0 " + Period + " " + Count + " " + Hue + " " + Saturation + " " + Value + " " + Strahler.UUID);
         }
 
         public static void FadeHue(byte GroupID, ushort Period, ushort HueMin, ushort HueMax, ushort Saturation, ushort Value)
@@ -250,14 +285,29 @@
             LEDStrahlerSerial.Write("G" + (int)Commands.FadeHue + " " + GroupID + " " + Period + " " + HueMax + " " + HueMin + " " + Saturation + " " + Value);
         }
 
+        public static void FadeHue(LEDStrahler Strahler, ushort Period, ushort HueMin, ushort HueMax, ushort Saturation, ushort Value)
+        {
+            LEDStrahlerSerial.Write("G" + (int)Commands.FadeHue + " 0 " + Period + " " + HueMax + " " + HueMin + " " + Saturation + " " + Value + " " + Strahler.UUID);
+        }
+
         public static void FadeSaturation(byte GroupID, ushort Period, ushort Hue, ushort SaturationMin, ushort SaturationMax, ushort Value)
         {
             LEDStrahlerSerial.Write("G" + (int)Commands.FadeSaturation + " " + GroupID + " " + Period + " " + Hue + " " + SaturationMax + " " + SaturationMin + " " + Value);
         }
 
+        public static void FadeSaturation(LEDStrahler Strahler, ushort Period, ushort Hue, ushort SaturationMin, ushort SaturationMax, ushort Value)
+        {
+            LEDStrahlerSerial.Write("G" + (int)Commands.FadeSaturation + " 0 " + Period + " " + Hue + " " + SaturationMax + " " + SaturationMin + " " + Value + " " + Strahler.UUID);
+        }
+
         public static void FadeValue(byte GroupID, ushort Period, ushort Hue, ushort Saturation, ushort ValueMin, ushort ValueMax)
         {
             LEDStrahlerSerial.Write("G" + (int)Commands.FadeValue + " " + GroupID + " " + Period + " " + Hue + " " + Saturation + " " + ValueMax + " " + ValueMin);
+        }
+
+        public static void FadeValue(LEDStrahler Strahler, ushort Period, ushort Hue, ushort Saturation, ushort ValueMin, ushort ValueMax)
+        {
+            LEDStrahlerSerial.Write("G" + (int)Commands.FadeValue + " 0 " + Period + " " + Hue + " " + Saturation + " " + ValueMax + " " + ValueMin + " " + Strahler.UUID);
         }
 
         public static void GetTemperature(LEDStrahler Strahler)

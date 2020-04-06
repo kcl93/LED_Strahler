@@ -30,8 +30,8 @@
             set { _UUID = value; NotifyPropertyChanged(); }
         }
 
-        private int _Group = 0;
-        public int Group
+        private byte _Group = 0;
+        public byte Group
         {
             get { return _Group; }
             set

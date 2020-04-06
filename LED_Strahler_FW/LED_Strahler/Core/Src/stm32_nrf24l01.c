@@ -98,8 +98,8 @@ uint8_t NRF24L01_Init(uint8_t channel, uint8_t payload_size) {
 	/* Enable RX addresses */
 	//NRF24L01_WriteRegister(NRF24L01_REG_EN_RXADDR, 0x3F);
 
-	/* Disable RX addresses beside pipeline 0 */
-	NRF24L01_WriteRegister(NRF24L01_REG_EN_RXADDR, (1 << NRF24L01_ERX_P0));
+	/* Disable RX addresses beside pipeline 0 and 1 */
+	NRF24L01_WriteRegister(NRF24L01_REG_EN_RXADDR, (1 << NRF24L01_ERX_P0) | (1 << NRF24L01_ERX_P1));
 
 	/* Auto retransmit delay: 1000 (4x250) us and Up to 15 retransmit trials */
 	//NRF24L01_WriteRegister(NRF24L01_REG_SETUP_RETR, 0x4F);

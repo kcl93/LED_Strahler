@@ -52,6 +52,12 @@ namespace LED_Strahler_GUI
             set { _ComPortList = value; NotifyPropertyChanged(); }
         }
 
+        private List<LEDGroupControl> _GroupControls = new List<LEDGroupControl>();
+        public List<LEDGroupControl> GroupControls
+        {
+            get { return _GroupControls; }
+        }
+
         #endregion
 
         #region Constructor
@@ -62,6 +68,14 @@ namespace LED_Strahler_GUI
 
             //Create Backend
             this.Backend = new LEDStrahlerBackend(this);
+
+            //Link Group controls
+            this._GroupControls.Add(this.GroupControl0);
+            this._GroupControls.Add(this.GroupControl1);
+            this._GroupControls.Add(this.GroupControl2);
+            this._GroupControls.Add(this.GroupControl3);
+            this._GroupControls.Add(this.GroupControl4);
+            this._GroupControls.Add(this.GroupControl5);
         }
 
         #endregion
@@ -115,7 +129,7 @@ namespace LED_Strahler_GUI
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             var Group = new AvailableGroups();
-            return Group.Groups[(int)value];
+            return Group.Groups[(int)(byte)value];
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
