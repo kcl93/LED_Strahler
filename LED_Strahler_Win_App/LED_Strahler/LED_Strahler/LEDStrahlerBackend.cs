@@ -1,22 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO.Ports;
-using System.Windows;
-using System.Windows.Controls;
-using System.ComponentModel;
-using System.Windows.Threading;
-
-namespace LED_Strahler_GUI
+﻿namespace LED_Strahler_GUI
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.ComponentModel;
+    using System.Windows.Threading;
+    using System.Windows.Input;
+
     public partial class LEDStrahlerBackend
     {
 
         private readonly MainWindow GUI = null;
 
-        private readonly DispatcherTimer Timer = new DispatcherTimer();
+        private readonly DispatcherTimer Timer = new DispatcherTimer(DispatcherPriority.Render);
+
+        private readonly List<Key> PressedKeys = new List<Key>();
 
         #region Constructor
 
@@ -40,7 +40,14 @@ namespace LED_Strahler_GUI
             //Link config tab
             this.GUI.GUITabs.SelectionChanged += this.TabSelectionChanged;
 
-            //Start timer for LJ stuff
+            //Link key up/down
+            this.GUI.Control.KeyDown += this.Control_KeyDown;
+            this.GUI.Control.KeyUp += this.Control_KeyUp;
+
+            //Empty list of pressed keys
+            this.PressedKeys.Clear();
+
+            //Start timer for LJ stuffs
             this.Timer.Interval = new TimeSpan(100000); //10ms interval
             this.Timer.Tick += new EventHandler(TimerTick);
             this.Timer.Start();
@@ -54,6 +61,10 @@ namespace LED_Strahler_GUI
         {
             if (this.GUI.Config.IsSelected == true)
             {
+                //Clear list of pressed buttons
+                this.PressedKeys.Clear();
+
+                //Update COM port list
                 this.UpdateCOMPortList();
             }
         }
@@ -91,11 +102,30 @@ namespace LED_Strahler_GUI
             this.GUI.DeviceGrid.IsEnabled = true;
         }
 
+
         public void GetTemperatureButtonClick(object sender, RoutedEventArgs e)
         {
             foreach (LEDStrahler Strahler in this.GUI.DeviceList)
             {
                 LEDStrahlerSerial.GetTemperature(Strahler);
+            }
+        }
+
+
+        public void Control_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(this.PressedKeys.Contains(e.Key) == false)
+            {
+                this.PressedKeys.Add(e.Key);
+            }
+        }
+
+
+        public void Control_KeyUp(object sender, KeyEventArgs e)
+        {
+            if(this.PressedKeys.Contains(e.Key) != false)
+            {
+                this.PressedKeys.Remove(e.Key);
             }
         }
 
@@ -126,31 +156,6 @@ namespace LED_Strahler_GUI
                     }
                 }
             }
-        }
-
-        private List<LEDStrahler> ListLJStrahler()
-        {
-            List<LEDStrahler> LJStrahler = new List<LEDStrahler>();
-
-            foreach (LEDGroupControl LEDGroup in this.GUI.GroupControls)
-            {
-                if (LEDGroup.Backend.LJMode == true)
-                {
-                    if(LEDGroup.GroupID == 0)
-                    {
-                        return this.GUI.DeviceList; //Broadcast group includes all LEDStrahler
-                    }
-                    foreach (LEDStrahler Strahler in this.GUI.DeviceList)
-                    {
-                        if (Strahler.Group == LEDGroup.GroupID)
-                        {
-                            LJStrahler.Add(Strahler);
-                        }
-                    }
-                }
-            }
-            
-            return LJStrahler;
         }
 
         private List<LEDStrahler> ListMusicStrahler()
@@ -211,7 +216,11 @@ namespace LED_Strahler_GUI
             StrahlerListe = ListLJStrahler();
             if(StrahlerListe.Count > 0)
             {
-
+                HandleLJMode(StrahlerListe);
+            }
+            else
+            {
+                this.LJUpdateLEDs = false; //Ensure that LEDs are not changing when switching to LJmode
             }
 
             //Handle music control stuff

@@ -1,9 +1,7 @@
 ﻿namespace LED_Strahler_GUI
 {
     using System;
-    using System.Windows;
     using System.Collections.Generic;
-    using System.Windows.Controls;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
 

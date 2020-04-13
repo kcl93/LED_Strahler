@@ -1,22 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿namespace LED_Strahler_GUI
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Windows;
+    using System.Windows.Data;
+    using System.ComponentModel;
+    using System.Runtime.CompilerServices;
 
-namespace LED_Strahler_GUI
-{ 
     /// <summary>
     /// Interaktionslogik für MainWindow.xaml
     /// </summary>
@@ -34,7 +24,7 @@ namespace LED_Strahler_GUI
             }
         #endregion
 
-        private LEDStrahlerBackend Backend = null;
+        private readonly LEDStrahlerBackend Backend = null;
 
         #region Properties
 
@@ -52,7 +42,7 @@ namespace LED_Strahler_GUI
             set { _ComPortList = value; NotifyPropertyChanged(); }
         }
 
-        private List<LEDGroupControl> _GroupControls = new List<LEDGroupControl>();
+        private readonly List<LEDGroupControl> _GroupControls = new List<LEDGroupControl>();
         public List<LEDGroupControl> GroupControls
         {
             get { return _GroupControls; }
@@ -79,6 +69,7 @@ namespace LED_Strahler_GUI
         }
 
         #endregion
+
     }
 
 

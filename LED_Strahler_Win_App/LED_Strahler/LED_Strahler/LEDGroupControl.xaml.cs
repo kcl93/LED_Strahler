@@ -1,7 +1,7 @@
-﻿using System.Windows.Controls;
-
-namespace LED_Strahler_GUI
+﻿namespace LED_Strahler_GUI
 {
+    using System.Windows.Controls;
+
     /// <summary>
     /// Interaktionslogik für LEDGroupControl.xaml
     /// </summary>

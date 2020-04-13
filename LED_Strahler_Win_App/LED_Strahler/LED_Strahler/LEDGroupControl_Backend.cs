@@ -1,12 +1,12 @@
-﻿using System;
-using System.Windows;
-using ColorMine.ColorSpaces;
-using System.ComponentModel;
-using System.Windows.Media;
-using System.Runtime.CompilerServices;
-
-namespace LED_Strahler_GUI
+﻿namespace LED_Strahler_GUI
 {
+    using System;
+    using System.Windows;
+    using ColorMine.ColorSpaces;
+    using System.ComponentModel;
+    using System.Windows.Media;
+    using System.Runtime.CompilerServices;
+
     public class LEDGroupControl_Backend : INotifyPropertyChanged
     {
         #region Property changed
@@ -409,9 +409,14 @@ namespace LED_Strahler_GUI
             }
         }
 
+        public double GetBrightnessScale()
+        {
+            return Math.Pow((double)this.BrightnessValue, 2) / Math.Pow(65535, 2);
+        }
+
         public void SetButtonClick(object sender, RoutedEventArgs e)
         {
-            double BrightnessScaling = Math.Pow((double)this.BrightnessValue, 2) / Math.Pow(65535, 2);
+            double BrightnessScaling = GetBrightnessScale();
             ushort Red = Convert.ToUInt16((double)this.RedValue * BrightnessScaling);
             ushort Green = Convert.ToUInt16((double)this.GreenValue * BrightnessScaling);
             ushort Blue = Convert.ToUInt16((double)this.BlueValue * BrightnessScaling);
@@ -420,7 +425,7 @@ namespace LED_Strahler_GUI
 
         public void StrobeButtonClick(object sender, RoutedEventArgs e)
         {
-            double BrightnessScaling = Math.Pow((double)this.BrightnessValue, 2) / Math.Pow(65535, 2);
+            double BrightnessScaling = GetBrightnessScale();
             ushort Red = Convert.ToUInt16((double)this.RedValue * BrightnessScaling);
             ushort Green = Convert.ToUInt16((double)this.GreenValue * BrightnessScaling);
             ushort Blue = Convert.ToUInt16((double)this.BlueValue * BrightnessScaling);
@@ -431,7 +436,7 @@ namespace LED_Strahler_GUI
 
         public void FadeButtonClick(object sender, RoutedEventArgs e)
         {
-            double BrightnessScaling = Math.Pow((double)this.BrightnessValue, 2) / Math.Pow(65535, 2);
+            double BrightnessScaling = GetBrightnessScale();
             ushort Period = Convert.ToUInt16(Math.Pow((double)this.PeriodValue, 2) / 65535);
             if (this.GUI.RB_Hue.IsChecked == true)
             {
